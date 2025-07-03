@@ -1,5 +1,7 @@
 import { google } from 'googleapis';
 import fetch from 'node-fetch';
+import { storeTokensForUser } from './oauth-store'; // or whatever filename you choose for token storage logic
+
 
 // Configuration values loaded from environment variables
 const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID || '';
@@ -28,6 +30,7 @@ export function googleAuthUrl() {
 
 export async function handleGoogleCallback(code: string) {
   const { tokens } = await googleOAuth2.getToken(code);
+  await storeTokensForUser('user123', { googleAccessToken: tokens.access_token });
   return tokens;
 }
 
@@ -51,10 +54,15 @@ export async function handleOutlookCallback(code: string) {
     code,
     grant_type: 'authorization_code',
   });
+
   const response = await fetch('https://login.microsoftonline.com/common/oauth2/v2.0/token', {
     method: 'POST',
     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
     body: params.toString(),
   });
-  return response.json();
+
+  const tokens = await response.json();
+  await storeTokensForUser('user123', { outlookAccessToken: tokens.access_token });
+  return tokens;
 }
+
