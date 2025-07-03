@@ -120,7 +120,7 @@
     "zustand": "5.0.3",
     "@fullcalendar/react": "^6.1.11",
     "@fullcalendar/daygrid": "^6.1.11",
-    "@fullcalendar/interaction": "^6.1.11",
+    "@fullcalendar/interaction": "^6.1.11"
   },
   "browserslist": [
     "ie >= 11",
