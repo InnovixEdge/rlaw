@@ -50,7 +50,7 @@ async function fetchOutlookEvents(userId: string, accessToken: string, start: st
   const response = await fetch(`https://graph.microsoft.com/v1.0/me/calendarView?startDateTime=${start}&endDateTime=${end}`, {
     headers: { Authorization: `Bearer ${accessToken}` },
   });
-  const data = await response.json();
+  const data = await response.json() as { value: any[] };
   return (data.value || []).map((e: any) => ({
     id: e.id,
     start: e.start.dateTime,
