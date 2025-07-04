@@ -1,5 +1,6 @@
 import fetch from 'node-fetch';
 import { kv } from '@vercel/kv';
+import { getTokensForUser } from './oauth-store';
 
 export async function getOutlookCalendarEvents(userId: string) {
   const tokens = await kv.hgetall<{ outlookAccessToken?: string }>(`tokens:${userId}`);
