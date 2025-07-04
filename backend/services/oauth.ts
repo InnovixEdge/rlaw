@@ -2,28 +2,22 @@ import { google } from 'googleapis'
 import fetch from 'node-fetch'
 import { storeTokensForUser } from './oauth-store'
 
-// === Load environment variables ===
+// === Hardcoded Redirect URIs for production ===
+const GOOGLE_REDIRECT = 'https://rlaw.vercel.app/api/auth/google/callback'
+const OUTLOOK_REDIRECT = 'https://rlaw.vercel.app/api/auth/outlook/callback'
+
+// === Load client secrets from env vars ===
 const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID || ''
 const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET || ''
-const GOOGLE_REDIRECT = process.env.GOOGLE_REDIRECT_URI || ''
-
 const OUTLOOK_CLIENT_ID = process.env.OUTLOOK_CLIENT_ID || ''
 const OUTLOOK_CLIENT_SECRET = process.env.OUTLOOK_CLIENT_SECRET || ''
-const OUTLOOK_REDIRECT = process.env.OUTLOOK_REDIRECT_URI || ''
 
-// === Validate critical environment variables ===
-if (!GOOGLE_CLIENT_ID || !GOOGLE_CLIENT_SECRET || !GOOGLE_REDIRECT) {
-  throw new Error('Missing one or more Google OAuth environment variables.')
+// === Validate critical credentials ===
+if (!GOOGLE_CLIENT_ID || !GOOGLE_CLIENT_SECRET) {
+  throw new Error('Missing Google OAuth credentials')
 }
-
-if (!OUTLOOK_CLIENT_ID || !OUTLOOK_CLIENT_SECRET || !OUTLOOK_REDIRECT) {
-  throw new Error('Missing one or more Outlook OAuth environment variables.')
-}
-
-// Optional: log redirect URIs during dev
-if (process.env.NODE_ENV !== 'production') {
-  console.log('[OAuth DEBUG] GOOGLE_REDIRECT:', GOOGLE_REDIRECT)
-  console.log('[OAuth DEBUG] OUTLOOK_REDIRECT:', OUTLOOK_REDIRECT)
+if (!OUTLOOK_CLIENT_ID || !OUTLOOK_CLIENT_SECRET) {
+  throw new Error('Missing Outlook OAuth credentials')
 }
 
 // === Token response shape for Outlook ===
@@ -49,7 +43,7 @@ export function googleAuthUrl() {
     access_type: 'offline',
     scope: scopes,
     prompt: 'consent',
-    redirect_uri: GOOGLE_REDIRECT // required explicitly
+    redirect_uri: GOOGLE_REDIRECT
   })
 }
 
@@ -70,4 +64,34 @@ export function outlookAuthUrl() {
   const params = new URLSearchParams({
     client_id: OUTLOOK_CLIENT_ID,
     response_type: 'code',
-    redirect_uri: OUTL_
+    redirect_uri: OUTLOOK_REDIRECT,
+    response_mode: 'query',
+    scope: 'https://graph.microsoft.com/Calendars.ReadWrite offline_access'
+  })
+
+  return `https://login.microsoftonline.com/common/oauth2/v2.0/authorize?${params.toString()}`
+}
+
+// === Handle Outlook OAuth2 callback ===
+export async function handleOutlookCallback(code: string) {
+  const params = new URLSearchParams({
+    client_id: OUTLOOK_CLIENT_ID,
+    client_secret: OUTLOOK_CLIENT_SECRET,
+    redirect_uri: OUTLOOK_REDIRECT,
+    code,
+    grant_type: 'authorization_code'
+  })
+
+  const response = await fetch('https://login.microsoftonline.com/common/oauth2/v2.0/token', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: params.toString()
+  })
+
+  const tokens = await response.json() as OutlookTokenResponse
+  await storeTokensForUser('user123', {
+    outlookAccessToken: tokens.access_token ?? undefined
+  })
+
+  return tokens
+}
