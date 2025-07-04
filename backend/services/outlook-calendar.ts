@@ -1,7 +1,7 @@
 import fetch from 'node-fetch';
 import { kv } from '@vercel/kv';
 
-export async function listOutlookEvents(userId: string) {
+export async function getOutlookCalendarEvents(userId: string) {
   const tokens = await kv.hgetall<{ outlookAccessToken?: string }>(`tokens:${userId}`);
   if (!tokens?.outlookAccessToken) throw new Error('No Outlook access token');
 
@@ -12,6 +12,11 @@ export async function listOutlookEvents(userId: string) {
   });
 
   if (!res.ok) throw new Error('Failed to fetch Outlook events');
-  const data = await res.json() as { value?: any[] };
-  return data.value ?? [];
+
+  const data: unknown = await res.json();
+  if (typeof data !== 'object' || data === null || !('value' in data)) {
+    throw new Error('Invalid response format from Outlook API');
+  }
+
+  return (data as { value: any[] }).value || [];
 }
