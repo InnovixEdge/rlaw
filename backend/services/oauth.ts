@@ -27,20 +27,23 @@ const googleOAuth2 = new google.auth.OAuth2(
   GOOGLE_REDIRECT
 )
 
-// Generate Google OAuth2 URL
+// Generate Google OAuth2 URL (FIXED HERE)
 export function googleAuthUrl() {
   const scopes = ['https://www.googleapis.com/auth/calendar']
   return googleOAuth2.generateAuthUrl({
     access_type: 'offline',
     scope: scopes,
-    prompt: 'consent'
+    prompt: 'consent',
+    redirect_uri: GOOGLE_REDIRECT // <-- This is the key fix
   })
 }
 
 // Handle Google OAuth2 callback
 export async function handleGoogleCallback(code: string) {
   const { tokens } = await googleOAuth2.getToken(code)
-  await storeTokensForUser('user123', { googleAccessToken: tokens.access_token ?? undefined })
+  await storeTokensForUser('user123', {
+    googleAccessToken: tokens.access_token ?? undefined
+  })
   return tokens
 }
 
@@ -74,9 +77,9 @@ export async function handleOutlookCallback(code: string) {
   })
 
   const tokens = await response.json() as OutlookTokenResponse
-  await storeTokensForUser('user123', { outlookAccessToken: tokens.access_token ?? undefined })
+  await storeTokensForUser('user123', {
+    outlookAccessToken: tokens.access_token ?? undefined
+  })
 
   return tokens
 }
-
-
