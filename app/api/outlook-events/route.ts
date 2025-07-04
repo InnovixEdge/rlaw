@@ -4,7 +4,7 @@ import { NextResponse } from 'next/server'
 export async function GET() {
   try {
     const userId = 'user123'
-    const events = await listOutlookEvents(userId)
+    const events = await getOutlookCalendarEvents(userId)
     return NextResponse.json(events)
   } catch (error) {
     console.error('Outlook Events API error:', error)
