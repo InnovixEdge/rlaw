@@ -6,7 +6,7 @@ interface TokenData {
 }
 
 export async function storeTokensForUser(userId: string, tokens: TokenData) {
-  await kv.hmset(`tokens:${userId}`, tokens)
+  await kv.hmset(`tokens:${userId}`, tokens as Record<string, unknown>)
 }
 
 export async function getTokensForUser(userId: string): Promise<TokenData> {
