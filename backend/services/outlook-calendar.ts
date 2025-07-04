@@ -1,7 +1,7 @@
 import fetch from 'node-fetch';
 import { kv } from '@vercel/kv';
 
-export async function getOutlookCalendarEvents(userId: string) {
+export async function listOutlookEvents(userId: string) {
   const tokens = await kv.hgetall<{ outlookAccessToken?: string }>(`tokens:${userId}`);
   if (!tokens?.outlookAccessToken) throw new Error('No Outlook access token');
 
