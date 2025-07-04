@@ -61,8 +61,16 @@ export async function handleOutlookCallback(code: string) {
     body: params.toString(),
   });
 
-  const tokens = await response.json();
-  await storeTokensForUser('user123', { outlookAccessToken: tokens.access_token });
-  return tokens;
+  interface OutlookTokenResponse {
+  access_token?: string | null;
+  token_type?: string;
+  expires_in?: number;
+  scope?: string;
+  refresh_token?: string;
+}
+
+const tokens: OutlookTokenResponse = await response.json();
+await storeTokensForUser('user123', { outlookAccessToken: tokens.access_token ?? undefined });
+
 }
 
