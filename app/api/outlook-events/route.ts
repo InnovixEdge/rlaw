@@ -1,4 +1,4 @@
-import { listOutlookEvents } from '@/backend/services/outlook-calendar'
+import { getOutlookCalendarEvents } from '@/backend/services/outlook-calendar'
 import { NextResponse } from 'next/server'
 
 export async function GET() {
