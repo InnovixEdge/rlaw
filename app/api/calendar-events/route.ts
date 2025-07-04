@@ -1,13 +1,15 @@
-import { listGoogleEvents } from '@/backend/services/google-calendar';
-import { listOutlookEvents } from '@/backend/services/outlook-calendar';
+// File: app/api/calendar-events/route.ts
+import { getGoogleCalendarEvents } from '@/backend/services/google-calendar';
+import { getOutlookCalendarEvents } from '@/backend/services/outlook-calendar';
 import { NextResponse } from 'next/server';
 
 export async function GET() {
   try {
-    const userId = 'user123'; // eventually replace with dynamic logic
+    const userId = 'user123'; // In the future, replace with dynamic auth logic
+
     const [googleEvents, outlookEvents] = await Promise.all([
-      listGoogleEvents(userId),
-      listOutlookEvents(userId),
+      getGoogleCalendarEvents(userId),
+      getOutlookCalendarEvents(userId),
     ]);
 
     return NextResponse.json({ googleEvents, outlookEvents });
