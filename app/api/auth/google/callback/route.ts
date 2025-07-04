@@ -12,7 +12,9 @@ export async function GET(req: NextRequest) {
   try {
     const tokens = await handleGoogleCallback(code)
     console.log('[Google Callback] Tokens stored:', tokens)
-    return NextResponse.redirect(`${process.env.NEXT_PUBLIC_APP_URL || 'https://rlaw.vercel.app'}/dashboard`)
+
+    // Hardcoded redirect to your dashboard
+    return NextResponse.redirect('https://rlaw.vercel.app/dashboard')
   } catch (err) {
     console.error('[Google Callback Error]', err)
     return NextResponse.json({ error: 'Failed to handle Google callback.' }, { status: 500 })
