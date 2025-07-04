@@ -10,6 +10,6 @@ export async function storeTokensForUser(userId: string, tokens: TokenData) {
 }
 
 export async function getTokensForUser(userId: string): Promise<TokenData> {
-  const tokens = await kv.hgetall<TokenData>(`tokens:${userId}`)
-  return tokens || {}
+  const tokens = await kv.hgetall(`tokens:${userId}`)
+  return (tokens ?? {}) as TokenData
 }
