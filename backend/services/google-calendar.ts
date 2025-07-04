@@ -1,7 +1,7 @@
 import { google } from 'googleapis';
 import { kv } from '@vercel/kv';
 
-export async function listGoogleEvents(userId: string) {
+export async function getGoogleCalendarEvents(userId: string) {
   const tokens = await kv.hgetall<{ googleAccessToken?: string }>(`tokens:${userId}`);
   if (!tokens?.googleAccessToken) throw new Error('No Google access token');
 
