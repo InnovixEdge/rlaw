@@ -12,6 +12,6 @@ export async function getOutlookCalendarEvents(userId: string) {
   });
 
   if (!res.ok) throw new Error('Failed to fetch Outlook events');
-  const data = await res.json();
-  return data.value || [];
+  const data = await res.json() as { value?: any[] };
+  return data.value ?? [];
 }
