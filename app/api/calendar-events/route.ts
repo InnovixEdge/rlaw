@@ -1,5 +1,5 @@
-import { listGoogleEvents } from '@/backend/services/google-calendar';
-import { listOutlookEvents } from '@/backend/services/outlook-calendar';
+import { getGoogleCalendarEvents } from '@/backend/services/google-calendar';
+import { getOutlookCalendarEvents } from '@/backend/services/outlook-calendar';
 import { NextResponse } from 'next/server';
 
 export async function GET() {
