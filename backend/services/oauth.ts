@@ -30,7 +30,7 @@ export function googleAuthUrl() {
 
 export async function handleGoogleCallback(code: string) {
   const { tokens } = await googleOAuth2.getToken(code);
-  await storeTokensForUser('user123', { googleAccessToken: tokens.access_token });
+  await storeTokensForUser('user123', { googleAccessToken: tokens.access_token ?? undefined });
   return tokens;
 }
 
