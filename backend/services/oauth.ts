@@ -4,31 +4,31 @@ import { storeTokensForUser } from './oauth-store'
 
 // === Hardcoded Redirect URIs for production ===
 const GOOGLE_REDIRECT = 'https://rlaw.vercel.app/api/auth/google/callback'
-const OUTLOOK_REDIRECT = 'https://rlaw.vercel.app/api/auth/outlook/callback'
+//const OUTLOOK_REDIRECT = 'https://rlaw.vercel.app/api/auth/outlook/callback'
 
 // === Load client secrets from env vars ===
 const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID || ''
 const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET || ''
-const OUTLOOK_CLIENT_ID = process.env.OUTLOOK_CLIENT_ID || ''
-const OUTLOOK_CLIENT_SECRET = process.env.OUTLOOK_CLIENT_SECRET || ''
+//const OUTLOOK_CLIENT_ID = process.env.OUTLOOK_CLIENT_ID || ''
+//const OUTLOOK_CLIENT_SECRET = process.env.OUTLOOK_CLIENT_SECRET || ''
 
 // === Validate critical credentials ===
 if (!GOOGLE_CLIENT_ID || !GOOGLE_CLIENT_SECRET) {
   throw new Error('Missing Google OAuth credentials')
 }
-if (!OUTLOOK_CLIENT_ID || !OUTLOOK_CLIENT_SECRET) {
-  throw new Error('Missing Outlook OAuth credentials')
-}
+//if (!OUTLOOK_CLIENT_ID || !OUTLOOK_CLIENT_SECRET) {
+//  throw new Error('Missing Outlook OAuth credentials')
+//}
 
 // === Token response shape for Outlook ===
-interface OutlookTokenResponse {
+/*interface OutlookTokenResponse {
   access_token?: string | null
   token_type?: string
   expires_in?: number
   scope?: string
   refresh_token?: string
 }
-
+*/
 // === Google OAuth2 client ===
 const googleOAuth2 = new google.auth.OAuth2(
   GOOGLE_CLIENT_ID,
@@ -58,7 +58,7 @@ export async function handleGoogleCallback(code: string) {
   })
   return tokens
 }
-
+/*
 // === Generate Outlook auth URL ===
 export function outlookAuthUrl() {
   const params = new URLSearchParams({
@@ -95,3 +95,4 @@ export async function handleOutlookCallback(code: string) {
 
   return tokens
 }
+*/
