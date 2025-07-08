@@ -6,4 +6,5 @@ export async function GET() {
   const url = outlookAuthUrl();
   return NextResponse.redirect(url);
 }
-*/
+*/ // temporarily disabled
+export {}
