@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { googleAuthUrl, outlookAuthUrl, handleGoogleCallback, handleOutlookCallback } from '../services/oauth';
+import { googleAuthUrl, handleGoogleCallback /*outlookAuthUrl, handleOutlookCallback*/ } from '../services/oauth';
 
 const router = Router();
 
@@ -9,9 +9,10 @@ router.get('/google', (req, res) => {
 });
 
 // Redirect user to Outlook OAuth consent screen
+/*
 router.get('/outlook', (req, res) => {
   res.redirect(outlookAuthUrl());
-});
+});*/
 
 // OAuth callback for Google
 router.get('/google/callback', async (req, res) => {
@@ -24,6 +25,7 @@ router.get('/google/callback', async (req, res) => {
 });
 
 // OAuth callback for Outlook
+/*
 router.get('/outlook/callback', async (req, res) => {
   try {
     const tokens = await handleOutlookCallback(req.query.code as string);
@@ -31,6 +33,6 @@ router.get('/outlook/callback', async (req, res) => {
   } catch (e) {
     res.status(500).json({ error: 'Outlook OAuth failed' });
   }
-});
+});*/
 
 export default router;
