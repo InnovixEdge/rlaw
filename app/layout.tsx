@@ -1,7 +1,7 @@
 // app/layout.tsx
 export const metadata = {
-  title: 'Your App Title',
-  description: 'Your app description',
+  title: 'Roberson Law Scheduler',
+  description: 'Scheduling Solutions',
 };
 
 export default function RootLayout({
