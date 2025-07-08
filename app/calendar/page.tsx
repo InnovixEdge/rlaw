@@ -4,7 +4,6 @@ import { Calendar, momentLocalizer, Views } from 'react-big-calendar'
 import 'react-big-calendar/lib/css/react-big-calendar.css'
 import moment from 'moment'
 import { useState } from 'react'
-import type { View } from 'react-big-calendar'
 
 const localizer = momentLocalizer(moment)
 
@@ -26,8 +25,10 @@ const events = [
   }
 ]
 
+type CalendarView = 'month' | 'week' | 'day'
+
 export default function CalendarPage() {
-  const [view, setView] = useState<View>(Views.MONTH)
+  const [view, setView] = useState<CalendarView>('month')
 
   return (
     <div className="p-4">
@@ -40,7 +41,7 @@ export default function CalendarPage() {
         startAccessor="start"
         endAccessor="end"
         style={{ height: 600 }}
-        onView={(view: View) => setView(view)}
+        onView={(view: CalendarView) => setView(view)}
       />
     </div>
   )
