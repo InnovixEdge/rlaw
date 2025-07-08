@@ -1,3 +1,4 @@
+/*
 import { handleOutlookCallback } from '@/backend/services/oauth';
 import { NextResponse } from 'next/server';
 
@@ -9,3 +10,4 @@ export async function GET(req: Request) {
   await handleOutlookCallback(code);
   return NextResponse.redirect('/success');
 }
+*/
