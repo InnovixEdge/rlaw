@@ -14,7 +14,9 @@ export async function GET(req: NextRequest) {
     console.log('[Google Callback] Tokens stored:', tokens)
 
     // Hardcoded redirect to your dashboard
-    return NextResponse.redirect('https://rlaw.vercel.app/dashboard')
+    //return NextResponse.redirect('https://rlaw.vercel.app/dashboard')
+    return NextResponse.redirect(`${process.env.NEXT_PUBLIC_APP_URL}/`);
+
   } catch (err) {
     console.error('[Google Callback Error]', err)
     return NextResponse.json({ error: 'Failed to handle Google callback.' }, { status: 500 })
