@@ -77,7 +77,7 @@ export default function CalendarPage() {
         startAccessor="start"
         endAccessor="end"
         style={{ height: 600 }}
-        onView={(view) => setView(view)}
+        onView={(view: typeof Views[keyof typeof Views]) => setView(view)}
         eventPropGetter={eventStyleGetter}
       />
     </div>
