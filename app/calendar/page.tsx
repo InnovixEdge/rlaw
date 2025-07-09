@@ -6,12 +6,36 @@ import { useState } from 'react'
 
 const localizer = momentLocalizer(moment)
 
-// Modern, sophisticated color palette
+// Ultra-modern color palette with vibrant gradients
 const STAFF_MEMBERS = [
-  { id: 'lee', name: 'Attorney Lee', color: '#10b981', gradient: 'from-emerald-400 to-emerald-600' },
-  { id: 'smith', name: 'Attorney Smith', color: '#3b82f6', gradient: 'from-blue-400 to-blue-600' },
-  { id: 'jones', name: 'Attorney Jones', color: '#8b5cf6', gradient: 'from-violet-400 to-violet-600' },
-  { id: 'davis', name: 'Attorney Davis', color: '#f59e0b', gradient: 'from-amber-400 to-amber-600' },
+  { 
+    id: 'lee', 
+    name: 'Attorney Lee', 
+    color: '#10b981', 
+    gradient: 'from-emerald-400 via-emerald-500 to-emerald-600',
+    lightBg: 'from-emerald-50 to-emerald-100'
+  },
+  { 
+    id: 'smith', 
+    name: 'Attorney Smith', 
+    color: '#3b82f6', 
+    gradient: 'from-blue-400 via-blue-500 to-blue-600',
+    lightBg: 'from-blue-50 to-blue-100'
+  },
+  { 
+    id: 'jones', 
+    name: 'Attorney Jones', 
+    color: '#8b5cf6', 
+    gradient: 'from-purple-400 via-purple-500 to-purple-600',
+    lightBg: 'from-purple-50 to-purple-100'
+  },
+  { 
+    id: 'davis', 
+    name: 'Attorney Davis', 
+    color: '#f59e0b', 
+    gradient: 'from-amber-400 via-amber-500 to-amber-600',
+    lightBg: 'from-amber-50 to-amber-100'
+  },
 ]
 
 const SLOT_TEMPLATES = [
@@ -127,25 +151,27 @@ export default function CalendarPage() {
       return {
         style: {
           background: event.type === 'available' 
-            ? `linear-gradient(135deg, ${staffInfo.color}dd, ${staffInfo.color}bb)`
+            ? `linear-gradient(135deg, ${staffInfo.color}ee, ${staffInfo.color}cc)`
             : `linear-gradient(135deg, ${staffInfo.color}, ${staffInfo.color}dd)`,
           color: 'white',
           fontWeight: '600',
-          border: event.type === 'available' ? '2px solid white' : 'none',
-          borderRadius: '8px',
-          boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-          fontSize: '12px'
+          border: event.type === 'available' ? '3px solid white' : 'none',
+          borderRadius: '12px',
+          boxShadow: '0 4px 20px rgba(0,0,0,0.15)',
+          fontSize: '12px',
+          fontFamily: '"Inter", -apple-system, BlinkMacSystemFont, sans-serif'
         }
       }
     }
     
     return {
       style: {
-        background: 'linear-gradient(135deg, #6b7280, #4b5563)',
+        background: 'linear-gradient(135deg, #64748b, #475569)',
         color: 'white',
         fontWeight: '600',
-        borderRadius: '8px',
-        boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
+        borderRadius: '12px',
+        boxShadow: '0 4px 20px rgba(0,0,0,0.15)',
+        fontFamily: '"Inter", -apple-system, BlinkMacSystemFont, sans-serif'
       }
     }
   }
@@ -235,69 +261,94 @@ export default function CalendarPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
-      <div className="container mx-auto px-6 py-8">
-        {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-4xl font-bold bg-gradient-to-r from-gray-800 to-gray-600 bg-clip-text text-transparent mb-2">
-            ⚖️ Firm Calendar
-          </h1>
-          <p className="text-gray-600 text-lg">Manage your legal practice with elegance and efficiency</p>
-        </div>
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50/30" style={{ fontFamily: '"Inter", -apple-system, BlinkMacSystemFont, sans-serif' }}>
+      <div className="container mx-auto px-8 py-12 max-w-7xl">
         
-        {/* Status Banner */}
-        <div className="mb-6 p-4 bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200 rounded-2xl shadow-sm">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-gradient-to-br from-amber-400 to-orange-500 rounded-full flex items-center justify-center">
-              <span className="text-white text-lg">📋</span>
+        {/* Ultra Modern Header - Inspired by Matalino AI */}
+        <div className="text-center mb-16">
+          <h1 className="text-6xl md:text-7xl font-bold mb-6 leading-tight">
+            <span className="bg-gradient-to-r from-slate-900 via-blue-900 to-slate-900 bg-clip-text text-transparent">
+              Legal
+            </span>{' '}
+            <span className="bg-gradient-to-r from-blue-600 via-purple-600 to-emerald-600 bg-clip-text text-transparent">
+              Calendar
+            </span>
+          </h1>
+          <p className="text-xl md:text-2xl text-slate-600 max-w-3xl mx-auto font-light leading-relaxed">
+            Intelligent scheduling for modern legal practices
+          </p>
+          
+          {/* Feature Pills */}
+          <div className="flex flex-wrap justify-center gap-4 mt-8">
+            <div className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-emerald-50 to-emerald-100 rounded-full border border-emerald-200">
+              <span className="text-emerald-600">📈</span>
+              <span className="text-emerald-800 font-medium text-sm">Smart Scheduling</span>
             </div>
-            <div>
-              <p className="text-amber-800 font-semibold">Demo Mode Active</p>
-              <p className="text-amber-700 text-sm">Using mock data with staff assignments. Connect your Google Calendar API to sync real events.</p>
+            <div className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-50 to-blue-100 rounded-full border border-blue-200">
+              <span className="text-blue-600">⚡</span>
+              <span className="text-blue-800 font-medium text-sm">Bulk Creation</span>
+            </div>
+            <div className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-purple-50 to-purple-100 rounded-full border border-purple-200">
+              <span className="text-purple-600">🎯</span>
+              <span className="text-purple-800 font-medium text-sm">Staff Management</span>
             </div>
           </div>
         </div>
         
-        {/* Control Panel */}
-        <div className="mb-6 p-6 bg-white/70 backdrop-blur-sm rounded-2xl shadow-lg border border-white/20">
-          <div className="flex flex-wrap gap-3 mb-4">
-            {/* Add Single Event Button */}
+        {/* Demo Mode Banner */}
+        <div className="mb-8 p-6 bg-gradient-to-r from-amber-50 via-orange-50 to-amber-50 border border-amber-200/50 rounded-3xl shadow-sm backdrop-blur-sm">
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 bg-gradient-to-br from-amber-400 to-orange-500 rounded-2xl flex items-center justify-center shadow-lg">
+              <span className="text-white text-xl">🚀</span>
+            </div>
+            <div>
+              <h3 className="text-amber-900 font-bold text-lg">Demo Environment</h3>
+              <p className="text-amber-800">Experience the power of intelligent legal scheduling with sample data</p>
+            </div>
+          </div>
+        </div>
+        
+        {/* Action Controls */}
+        <div className="mb-8 p-8 bg-white/80 backdrop-blur-xl rounded-3xl shadow-xl border border-white/30">
+          <div className="flex flex-wrap gap-4 justify-center lg:justify-start">
+            
+            {/* Add Event Button */}
             <button
-              className="px-6 py-3 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-xl hover:from-blue-600 hover:to-blue-700 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 font-medium flex items-center gap-2"
+              className="group px-8 py-4 bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 text-white rounded-2xl hover:from-blue-600 hover:via-blue-700 hover:to-blue-800 transition-all duration-300 shadow-xl hover:shadow-2xl transform hover:-translate-y-1 font-semibold flex items-center gap-3"
               onClick={() => setShowForm(true)}
             >
-              <span>➕</span>
-              Add Single Event
+              <span className="text-xl">➕</span>
+              <span>Add Event</span>
             </button>
             
             {/* Bulk Create Button */}
             <button
-              className="px-6 py-3 bg-gradient-to-r from-purple-500 to-purple-600 text-white rounded-xl hover:from-purple-600 hover:to-purple-700 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 font-medium flex items-center gap-2"
+              className="group px-8 py-4 bg-gradient-to-r from-purple-500 via-purple-600 to-purple-700 text-white rounded-2xl hover:from-purple-600 hover:via-purple-700 hover:to-purple-800 transition-all duration-300 shadow-xl hover:shadow-2xl transform hover:-translate-y-1 font-semibold flex items-center gap-3"
               onClick={() => setShowBulkForm(true)}
             >
-              <span>⚡</span>
-              Bulk Create Availability
+              <span className="text-xl">⚡</span>
+              <span>Bulk Create</span>
             </button>
             
             {/* Availability Toggle */}
             <button
-              className={`px-6 py-3 rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 font-medium flex items-center gap-2 ${showAvailableOnly 
-                ? 'bg-gradient-to-r from-emerald-500 to-emerald-600 text-white' 
-                : 'bg-white border-2 border-gray-200 text-gray-700 hover:border-gray-300'
+              className={`group px-8 py-4 rounded-2xl transition-all duration-300 shadow-xl hover:shadow-2xl transform hover:-translate-y-1 font-semibold flex items-center gap-3 ${showAvailableOnly 
+                ? 'bg-gradient-to-r from-emerald-500 via-emerald-600 to-emerald-700 text-white hover:from-emerald-600 hover:via-emerald-700 hover:to-emerald-800' 
+                : 'bg-white border-2 border-slate-200 text-slate-700 hover:border-slate-300 hover:bg-slate-50'
               }`}
               onClick={() => setShowAvailableOnly(!showAvailableOnly)}
             >
-              <span>{showAvailableOnly ? '✅' : '👁️'}</span>
-              {showAvailableOnly ? "Show All Events" : "Show Available Only"}
+              <span className="text-xl">{showAvailableOnly ? '✅' : '👁️'}</span>
+              <span>{showAvailableOnly ? "All Events" : "Available Only"}</span>
             </button>
             
             {/* Staff Filter */}
             <select
-              className="px-6 py-3 border-2 border-gray-200 rounded-xl bg-white/90 hover:border-gray-300 focus:outline-none focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-200 font-medium text-gray-700 shadow-lg"
+              className="px-8 py-4 border-2 border-slate-200 rounded-2xl bg-white/90 hover:border-slate-300 focus:outline-none focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300 font-semibold text-slate-700 shadow-xl min-w-48"
               value={selectedStaff}
               onChange={(e) => setSelectedStaff(e.target.value)}
             >
-              <option value="all">👥 All Staff</option>
+              <option value="all">👥 All Staff Members</option>
               {STAFF_MEMBERS.map(staff => (
                 <option key={staff.id} value={staff.id}>
                   {staff.name}
@@ -307,75 +358,71 @@ export default function CalendarPage() {
           </div>
         </div>
 
-        {/* Beautiful Staff Legend */}
-        <div className="mb-6 p-6 bg-white/70 backdrop-blur-sm rounded-2xl shadow-lg border border-white/20">
-          <h3 className="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
-            <span>🎨</span>
-            Staff Color Legend
-          </h3>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 mb-4">
+        {/* PROMINENT Staff Color Legend */}
+        <div className="mb-8 p-8 bg-white/80 backdrop-blur-xl rounded-3xl shadow-xl border border-white/30">
+          <div className="text-center mb-8">
+            <h2 className="text-3xl font-bold bg-gradient-to-r from-slate-800 to-slate-600 bg-clip-text text-transparent mb-2">
+              Staff Color Guide
+            </h2>
+            <p className="text-slate-600 text-lg">Match calendar events to attorneys by color</p>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
             {STAFF_MEMBERS.map(staff => (
               <div key={staff.id} className="group">
-                <div className="p-4 bg-white rounded-xl shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1 border border-gray-100">
-                  <div className="flex items-center gap-3">
+                <div className={`p-6 bg-gradient-to-br ${staff.lightBg} rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 border border-white/50`}>
+                  <div className="text-center">
                     <div 
-                      className="w-6 h-6 rounded-full shadow-lg border-2 border-white"
-                      style={{ 
-                        background: `linear-gradient(135deg, ${staff.color}, ${staff.color}dd)`
-                      }}
-                    ></div>
-                    <div>
-                      <span className="text-sm font-semibold text-gray-800 block">{staff.name}</span>
-                      <span className="text-xs text-gray-500">Legal Professional</span>
+                      className={`w-16 h-16 mx-auto mb-4 rounded-2xl shadow-xl bg-gradient-to-br ${staff.gradient} flex items-center justify-center`}
+                    >
+                      <span className="text-white text-2xl font-bold">
+                        {staff.name.split(' ')[1].charAt(0)}
+                      </span>
+                    </div>
+                    <h3 className="text-lg font-bold text-slate-800 mb-1">{staff.name}</h3>
+                    <p className="text-sm text-slate-600">Legal Professional</p>
+                    <div className="mt-4 text-xs text-slate-500">
+                      Events appear in this color
                     </div>
                   </div>
                 </div>
               </div>
             ))}
-            <div className="group">
-              <div className="p-4 bg-white rounded-xl shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1 border border-gray-100">
-                <div className="flex items-center gap-3">
-                  <div className="w-6 h-6 bg-gradient-to-br from-gray-400 to-gray-600 rounded-full shadow-lg border-2 border-white"></div>
-                  <div>
-                    <span className="text-sm font-semibold text-gray-800 block">Team Events</span>
-                    <span className="text-xs text-gray-500">Group Activities</span>
-                  </div>
-                </div>
-              </div>
-            </div>
           </div>
           
-          <div className="flex flex-wrap gap-6 text-sm text-gray-600 bg-gradient-to-r from-blue-50 to-indigo-50 p-4 rounded-xl">
-            <div className="flex items-center gap-2">
-              <span className="text-lg">💎</span>
-              <span><strong>Available slots</strong> have white borders and subtle transparency</span>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-center">
+            <div className="p-4 bg-gradient-to-br from-emerald-50 to-emerald-100 rounded-xl border border-emerald-200">
+              <div className="text-emerald-600 text-2xl mb-2">💎</div>
+              <span className="text-emerald-800 font-semibold">Available slots have white borders</span>
             </div>
-            <div className="flex items-center gap-2">
-              <span className="text-lg">📊</span>
-              <span>Displaying {filteredEvents.length} events 
-                {selectedStaff !== 'all' && ` for ${getStaffInfo(selectedStaff)?.name}`}
-                {showAvailableOnly && ' (available appointments only)'}
+            <div className="p-4 bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl border border-blue-200">
+              <div className="text-blue-600 text-2xl mb-2">📊</div>
+              <span className="text-blue-800 font-semibold">Showing {filteredEvents.length} total events</span>
+            </div>
+            <div className="p-4 bg-gradient-to-br from-purple-50 to-purple-100 rounded-xl border border-purple-200">
+              <div className="text-purple-600 text-2xl mb-2">👤</div>
+              <span className="text-purple-800 font-semibold">
+                {selectedStaff !== 'all' ? `Filtered: ${getStaffInfo(selectedStaff)?.name}` : 'All staff shown'}
               </span>
             </div>
           </div>
         </div>
 
-        {/* Enhanced Single Event Form Modal */}
+        {/* Modern Forms - keeping the existing modal forms but with improved styling */}
         {showForm && (
-          <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-            <div className="bg-white/95 backdrop-blur-sm p-8 rounded-3xl w-full max-w-md shadow-2xl border border-white/20">
-              <h2 className="text-2xl font-bold text-gray-800 mb-6 flex items-center gap-3">
-                <span className="w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center text-white">➕</span>
-                Add Single Event
+          <div className="fixed inset-0 bg-black/60 backdrop-blur-md flex items-center justify-center z-50 p-4">
+            <div className="bg-white/95 backdrop-blur-xl p-10 rounded-3xl w-full max-w-lg shadow-2xl border border-white/30">
+              <h2 className="text-3xl font-bold text-slate-800 mb-8 text-center">
+                Create New Event
               </h2>
               
               <div className="space-y-6">
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                  <label className="block text-sm font-bold text-slate-700 mb-3">
                     Event Title
                   </label>
                   <input
-                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-200 bg-white/90"
+                    className="w-full px-6 py-4 border-2 border-slate-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300 bg-white/90 font-medium"
                     value={formData.title}
                     onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                     placeholder="e.g., Available Consultation Slot"
@@ -384,11 +431,11 @@ export default function CalendarPage() {
                 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    <label className="block text-sm font-bold text-slate-700 mb-3">
                       Staff Member
                     </label>
                     <select
-                      className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-200 bg-white/90"
+                      className="w-full px-6 py-4 border-2 border-slate-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300 bg-white/90 font-medium"
                       value={formData.staff}
                       onChange={(e) => setFormData({ ...formData, staff: e.target.value })}
                     >
@@ -401,15 +448,15 @@ export default function CalendarPage() {
                   </div>
                   
                   <div>
-                    <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    <label className="block text-sm font-bold text-slate-700 mb-3">
                       Event Type
                     </label>
                     <select
-                      className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-200 bg-white/90"
+                      className="w-full px-6 py-4 border-2 border-slate-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300 bg-white/90 font-medium"
                       value={formData.type}
                       onChange={(e) => setFormData({ ...formData, type: e.target.value })}
                     >
-                      <option value="available">📅 Available Slot</option>
+                      <option value="available">📅 Available</option>
                       <option value="booked">✅ Booked</option>
                       <option value="meeting">👥 Meeting</option>
                       <option value="other">📋 Other</option>
@@ -418,11 +465,11 @@ export default function CalendarPage() {
                 </div>
                 
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                  <label className="block text-sm font-bold text-slate-700 mb-3">
                     Start Time
                   </label>
                   <input
-                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-200 bg-white/90"
+                    className="w-full px-6 py-4 border-2 border-slate-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300 bg-white/90 font-medium"
                     type="datetime-local"
                     value={formData.start}
                     onChange={(e) => setFormData({ ...formData, start: e.target.value })}
@@ -430,11 +477,11 @@ export default function CalendarPage() {
                 </div>
                 
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                  <label className="block text-sm font-bold text-slate-700 mb-3">
                     End Time
                   </label>
                   <input
-                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-200 bg-white/90"
+                    className="w-full px-6 py-4 border-2 border-slate-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300 bg-white/90 font-medium"
                     type="datetime-local"
                     value={formData.end}
                     onChange={(e) => setFormData({ ...formData, end: e.target.value })}
@@ -442,15 +489,15 @@ export default function CalendarPage() {
                 </div>
               </div>
               
-              <div className="flex gap-3 mt-8">
+              <div className="flex gap-4 mt-10">
                 <button
-                  className="flex-1 px-6 py-3 border-2 border-gray-300 text-gray-700 rounded-xl hover:bg-gray-50 transition-all duration-200 font-medium"
+                  className="flex-1 px-8 py-4 border-2 border-slate-300 text-slate-700 rounded-xl hover:bg-slate-50 transition-all duration-300 font-bold"
                   onClick={() => setShowForm(false)}
                 >
                   Cancel
                 </button>
                 <button
-                  className="flex-1 px-6 py-3 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-xl hover:from-blue-600 hover:to-blue-700 transition-all duration-200 shadow-lg font-medium"
+                  className="flex-1 px-8 py-4 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-xl hover:from-blue-600 hover:to-blue-700 transition-all duration-300 shadow-xl font-bold"
                   onClick={handleSubmit}
                 >
                   Create Event
@@ -460,24 +507,23 @@ export default function CalendarPage() {
           </div>
         )}
 
-        {/* Enhanced Bulk Create Form Modal */}
+        {/* Bulk Form Modal */}
         {showBulkForm && (
-          <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-            <div className="bg-white/95 backdrop-blur-sm p-8 rounded-3xl w-full max-w-4xl max-h-[90vh] overflow-y-auto shadow-2xl border border-white/20">
-              <h2 className="text-3xl font-bold text-gray-800 mb-8 flex items-center gap-4">
-                <span className="w-12 h-12 bg-gradient-to-br from-purple-500 to-purple-600 rounded-full flex items-center justify-center text-white text-xl">⚡</span>
-                Bulk Create Availability Slots
+          <div className="fixed inset-0 bg-black/60 backdrop-blur-md flex items-center justify-center z-50 p-4">
+            <div className="bg-white/95 backdrop-blur-xl p-10 rounded-3xl w-full max-w-5xl max-h-[90vh] overflow-y-auto shadow-2xl border border-white/30">
+              <h2 className="text-4xl font-bold text-slate-800 mb-10 text-center">
+                Bulk Availability Creation
               </h2>
               
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                {/* Left Column */}
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
+                {/* Left Column - keeping existing bulk form structure but with better styling */}
                 <div className="space-y-6">
                   <div>
-                    <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    <label className="block text-sm font-bold text-slate-700 mb-3">
                       Staff Member
                     </label>
                     <select
-                      className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-500/20 focus:border-purple-500 transition-all duration-200 bg-white/90"
+                      className="w-full px-6 py-4 border-2 border-slate-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-500/20 focus:border-purple-500 transition-all duration-300 bg-white/90 font-medium"
                       value={bulkFormData.staff}
                       onChange={(e) => setBulkFormData({ ...bulkFormData, staff: e.target.value })}
                     >
@@ -490,11 +536,11 @@ export default function CalendarPage() {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    <label className="block text-sm font-bold text-slate-700 mb-3">
                       Appointment Template
                     </label>
                     <select
-                      className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-500/20 focus:border-purple-500 transition-all duration-200 bg-white/90"
+                      className="w-full px-6 py-4 border-2 border-slate-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-500/20 focus:border-purple-500 transition-all duration-300 bg-white/90 font-medium"
                       value={bulkFormData.template}
                       onChange={(e) => setBulkFormData({ ...bulkFormData, template: e.target.value })}
                     >
@@ -508,7 +554,7 @@ export default function CalendarPage() {
 
                   {bulkFormData.template === 'custom' && (
                     <div>
-                      <label className="block text-sm font-semibold text-gray-700 mb-2">
+                      <label className="block text-sm font-bold text-slate-700 mb-3">
                         Custom Duration (minutes)
                       </label>
                       <input
@@ -516,7 +562,7 @@ export default function CalendarPage() {
                         min="15"
                         max="240"
                         step="15"
-                        className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-500/20 focus:border-purple-500 transition-all duration-200 bg-white/90"
+                        className="w-full px-6 py-4 border-2 border-slate-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-500/20 focus:border-purple-500 transition-all duration-300 bg-white/90 font-medium"
                         value={bulkFormData.customDuration}
                         onChange={(e) => setBulkFormData({ ...bulkFormData, customDuration: parseInt(e.target.value) })}
                       />
@@ -525,24 +571,24 @@ export default function CalendarPage() {
 
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-sm font-semibold text-gray-700 mb-2">
+                      <label className="block text-sm font-bold text-slate-700 mb-3">
                         Start Date
                       </label>
                       <input
                         type="date"
-                        className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-500/20 focus:border-purple-500 transition-all duration-200 bg-white/90"
+                        className="w-full px-6 py-4 border-2 border-slate-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-500/20 focus:border-purple-500 transition-all duration-300 bg-white/90 font-medium"
                         value={bulkFormData.startDate}
                         onChange={(e) => setBulkFormData({ ...bulkFormData, startDate: e.target.value })}
                       />
                     </div>
                     
                     <div>
-                      <label className="block text-sm font-semibold text-gray-700 mb-2">
+                      <label className="block text-sm font-bold text-slate-700 mb-3">
                         End Date
                       </label>
                       <input
                         type="date"
-                        className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-500/20 focus:border-purple-500 transition-all duration-200 bg-white/90"
+                        className="w-full px-6 py-4 border-2 border-slate-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-500/20 focus:border-purple-500 transition-all duration-300 bg-white/90 font-medium"
                         value={bulkFormData.endDate}
                         onChange={(e) => setBulkFormData({ ...bulkFormData, endDate: e.target.value })}
                       />
@@ -554,24 +600,24 @@ export default function CalendarPage() {
                 <div className="space-y-6">
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-sm font-semibold text-gray-700 mb-2">
+                      <label className="block text-sm font-bold text-slate-700 mb-3">
                         Start Time
                       </label>
                       <input
                         type="time"
-                        className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-500/20 focus:border-purple-500 transition-all duration-200 bg-white/90"
+                        className="w-full px-6 py-4 border-2 border-slate-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-500/20 focus:border-purple-500 transition-all duration-300 bg-white/90 font-medium"
                         value={bulkFormData.startTime}
                         onChange={(e) => setBulkFormData({ ...bulkFormData, startTime: e.target.value })}
                       />
                     </div>
                     
                     <div>
-                      <label className="block text-sm font-semibold text-gray-700 mb-2">
+                      <label className="block text-sm font-bold text-slate-700 mb-3">
                         End Time
                       </label>
                       <input
                         type="time"
-                        className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-500/20 focus:border-purple-500 transition-all duration-200 bg-white/90"
+                        className="w-full px-6 py-4 border-2 border-slate-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-500/20 focus:border-purple-500 transition-all duration-300 bg-white/90 font-medium"
                         value={bulkFormData.endTime}
                         onChange={(e) => setBulkFormData({ ...bulkFormData, endTime: e.target.value })}
                       />
@@ -579,15 +625,15 @@ export default function CalendarPage() {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-semibold text-gray-700 mb-3">
+                    <label className="block text-sm font-bold text-slate-700 mb-4">
                       Days of Week
                     </label>
                     <div className="grid grid-cols-2 gap-3">
                       {['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'].map((day) => (
-                        <label key={day} className="flex items-center p-3 rounded-xl bg-gray-50 hover:bg-gray-100 transition-colors cursor-pointer">
+                        <label key={day} className="flex items-center p-4 rounded-xl bg-slate-50 hover:bg-slate-100 transition-colors cursor-pointer border border-slate-200">
                           <input
                             type="checkbox"
-                            className="mr-3 w-4 h-4 text-purple-600 focus:ring-purple-500 rounded"
+                            className="mr-3 w-5 h-5 text-purple-600 focus:ring-purple-500 rounded"
                             checked={bulkFormData.weekdays.includes(day.toLowerCase())}
                             onChange={(e) => {
                               const dayLower = day.toLowerCase()
@@ -604,52 +650,36 @@ export default function CalendarPage() {
                               }
                             }}
                           />
-                          <span className="text-sm font-medium">{day}</span>
+                          <span className="font-medium">{day}</span>
                         </label>
                       ))}
                     </div>
                   </div>
 
-                  <div className="p-6 bg-gradient-to-br from-purple-50 to-indigo-50 rounded-2xl border border-purple-100">
-                    <h4 className="font-bold text-purple-800 mb-3 flex items-center gap-2">
-                      <span>👁️</span>
-                      Preview
+                  <div className="p-6 bg-gradient-to-br from-purple-50 to-indigo-50 rounded-2xl border border-purple-200">
+                    <h4 className="font-bold text-purple-800 mb-4 text-lg">
+                      📋 Preview Summary
                     </h4>
                     <div className="text-sm text-purple-700 space-y-2">
-                      <div className="flex items-center gap-2">
-                        <span>📅</span>
-                        <span><strong>Date Range:</strong> {bulkFormData.startDate || 'Not set'} to {bulkFormData.endDate || 'Not set'}</span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <span>⏰</span>
-                        <span><strong>Time:</strong> {bulkFormData.startTime} - {bulkFormData.endTime}</span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <span>👤</span>
-                        <span><strong>Staff:</strong> {STAFF_MEMBERS.find(s => s.id === bulkFormData.staff)?.name}</span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <span>📝</span>
-                        <span><strong>Template:</strong> {SLOT_TEMPLATES.find(t => t.id === bulkFormData.template)?.name}</span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <span>📆</span>
-                        <span><strong>Days:</strong> {bulkFormData.weekdays.join(', ')}</span>
-                      </div>
+                      <div><strong>Date Range:</strong> {bulkFormData.startDate || 'Not set'} to {bulkFormData.endDate || 'Not set'}</div>
+                      <div><strong>Time:</strong> {bulkFormData.startTime} - {bulkFormData.endTime}</div>
+                      <div><strong>Staff:</strong> {STAFF_MEMBERS.find(s => s.id === bulkFormData.staff)?.name}</div>
+                      <div><strong>Template:</strong> {SLOT_TEMPLATES.find(t => t.id === bulkFormData.template)?.name}</div>
+                      <div><strong>Days:</strong> {bulkFormData.weekdays.join(', ')}</div>
                     </div>
                   </div>
                 </div>
               </div>
               
-              <div className="flex gap-4 mt-8 pt-6 border-t border-gray-200">
+              <div className="flex gap-4 mt-10">
                 <button
-                  className="flex-1 px-6 py-3 border-2 border-gray-300 text-gray-700 rounded-xl hover:bg-gray-50 transition-all duration-200 font-medium"
+                  className="flex-1 px-8 py-4 border-2 border-slate-300 text-slate-700 rounded-xl hover:bg-slate-50 transition-all duration-300 font-bold"
                   onClick={() => setShowBulkForm(false)}
                 >
                   Cancel
                 </button>
                 <button
-                  className="flex-1 px-6 py-3 bg-gradient-to-r from-purple-500 to-purple-600 text-white rounded-xl hover:from-purple-600 hover:to-purple-700 transition-all duration-200 shadow-lg font-medium disabled:opacity-50"
+                  className="flex-1 px-8 py-4 bg-gradient-to-r from-purple-500 to-purple-600 text-white rounded-xl hover:from-purple-600 hover:to-purple-700 transition-all duration-300 shadow-xl font-bold disabled:opacity-50"
                   onClick={handleBulkSubmit}
                   disabled={!bulkFormData.startDate || !bulkFormData.endDate}
                 >
@@ -660,67 +690,86 @@ export default function CalendarPage() {
           </div>
         )}
 
-        {/* Beautiful Calendar Container */}
-        <div className="bg-white/70 backdrop-blur-sm rounded-2xl shadow-xl border border-white/20 p-6">
+        {/* Ultra Modern Calendar Container */}
+        <div className="bg-white/80 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/30 p-8">
           <style jsx global>{`
+            @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+            
             .rbc-calendar {
               font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+              font-weight: 500;
             }
             .rbc-header {
               background: linear-gradient(135deg, #f8fafc, #e2e8f0);
-              font-weight: 600;
-              color: #374151;
-              border-bottom: 2px solid #e5e7eb;
-              padding: 12px 8px;
+              font-weight: 700;
+              color: #334155;
+              border-bottom: 2px solid #e2e8f0;
+              padding: 16px 12px;
+              font-size: 14px;
+              text-transform: uppercase;
+              letter-spacing: 0.5px;
             }
             .rbc-month-view, .rbc-time-view {
               border: none;
-              border-radius: 12px;
+              border-radius: 16px;
               overflow: hidden;
+              background: white;
             }
             .rbc-day-bg {
               border-right: 1px solid #f1f5f9;
+              border-bottom: 1px solid #f1f5f9;
             }
             .rbc-date-cell {
               text-align: center;
-              padding: 8px;
-              font-weight: 500;
+              padding: 12px;
+              font-weight: 600;
+              color: #475569;
             }
             .rbc-today {
-              background-color: rgba(59, 130, 246, 0.1);
+              background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(147, 197, 253, 0.1));
             }
             .rbc-off-range-bg {
               background-color: #f8fafc;
             }
             .rbc-event {
-              font-size: 11px;
-              padding: 2px 6px;
-              margin: 1px;
+              font-size: 12px;
+              padding: 4px 8px;
+              margin: 2px;
+              font-weight: 600;
             }
             .rbc-toolbar {
-              margin-bottom: 20px;
-              padding: 16px;
+              margin-bottom: 24px;
+              padding: 20px;
               background: linear-gradient(135deg, #f8fafc, #e2e8f0);
-              border-radius: 16px;
-              border: 1px solid #e5e7eb;
+              border-radius: 20px;
+              border: 2px solid #e2e8f0;
             }
             .rbc-toolbar button {
               background: white;
-              border: 2px solid #e5e7eb;
-              border-radius: 8px;
-              padding: 8px 16px;
-              margin: 0 4px;
-              font-weight: 500;
-              transition: all 0.2s;
+              border: 2px solid #e2e8f0;
+              border-radius: 12px;
+              padding: 12px 20px;
+              margin: 0 6px;
+              font-weight: 600;
+              transition: all 0.3s ease;
+              font-family: 'Inter', sans-serif;
             }
             .rbc-toolbar button:hover {
               border-color: #3b82f6;
               background: #eff6ff;
+              transform: translateY(-2px);
+              box-shadow: 0 8px 25px rgba(59, 130, 246, 0.2);
             }
             .rbc-toolbar button.rbc-active {
               background: linear-gradient(135deg, #3b82f6, #2563eb);
               color: white;
               border-color: #3b82f6;
+              box-shadow: 0 8px 25px rgba(59, 130, 246, 0.3);
+            }
+            .rbc-toolbar-label {
+              font-weight: 800;
+              font-size: 18px;
+              color: #1e293b;
             }
           `}</style>
           
@@ -735,7 +784,7 @@ export default function CalendarPage() {
             views={['month', 'week', 'day']}
             startAccessor="start"
             endAccessor="end"
-            style={{ height: 700 }}
+            style={{ height: 800 }}
             onView={(v: any) => setView(v)}
             eventPropGetter={eventStyleGetter}
             onSelectEvent={handleSelectEvent}
