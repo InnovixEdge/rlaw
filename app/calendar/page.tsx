@@ -19,7 +19,7 @@ interface CalendarEvent {
   title: string
   start: string | Date
   end: string | Date
-  staff?: string
+  staff?: string | null
   type?: 'available' | 'booked' | 'meeting' | 'other'
   [key: string]: any
 }
