@@ -1,48 +1,54 @@
 'use client'
 
+import { useEffect, useState } from 'react'
 import { Calendar, momentLocalizer, Views } from 'react-big-calendar'
 import 'react-big-calendar/lib/css/react-big-calendar.css'
 import moment from 'moment'
-import { useState } from 'react'
 
 const localizer = momentLocalizer(moment)
 
-const allEvents = [
-  {
-    id: 0,
-    title: 'Consultation - Jane Doe',
-    start: new Date(2025, 6, 10, 10, 0),
-    end: new Date(2025, 6, 10, 11, 0),
-    staff: 'Attorney Smith',
-    available: false
-  },
-  {
-    id: 1,
-    title: 'Available Slot',
-    start: new Date(2025, 6, 10, 11, 0),
-    end: new Date(2025, 6, 10, 12, 0),
-    staff: 'Attorney Smith',
-    available: true
-  },
-  {
-    id: 2,
-    title: 'Available Slot',
-    start: new Date(2025, 6, 11, 14, 0),
-    end: new Date(2025, 6, 11, 15, 0),
-    staff: 'Attorney Lee',
-    available: true
-  }
-]
+interface Event {
+  title: string
+  start: Date
+  end: Date
+  staff?: string
+  available?: boolean
+}
 
 export default function CalendarPage() {
-  const [view, setView] = useState(Views.MONTH)
-  const [showAvailableOnly, setShowAvailableOnly] = useState(false)
+  const [view, setView] = useState<typeof Views[keyof typeof Views]>(Views.MONTH)
+  const [events, setEvents] = useState<Event[]>([])
+  const [loading, setLoading] = useState(true)
 
-  const filteredEvents = showAvailableOnly
-    ? allEvents.filter((event) => event.available)
-    : allEvents
+  useEffect(() => {
+    async function fetchEvents() {
+      try {
+        const res = await fetch('/api/google-events')
+        if (!res.ok) {
+          throw new Error('Network response was not ok')
+        }
+        const data = await res.json()
 
-  function eventStyleGetter(event: any) {
+        // Transform fetched events to match the Event type
+        const googleEvents = data.map((event: any) => ({
+          title: event.summary,
+          start: new Date(event.start.dateTime || event.start.date),
+          end: new Date(event.end.dateTime || event.end.date),
+          available: !event.summary, // or your own logic to identify availability
+        }))
+
+        setEvents(googleEvents)
+      } catch (error) {
+        console.error('Error fetching events:', error)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchEvents()
+  }, [])
+
+  function eventStyleGetter(event: Event) {
     const backgroundColor = event.available ? '#38bdf8' : '#f87171'
     const borderColor = event.staff === 'Attorney Lee' ? '#4ade80' : '#facc15'
 
@@ -51,27 +57,21 @@ export default function CalendarPage() {
         backgroundColor,
         borderLeft: `4px solid ${borderColor}`,
         color: 'black',
-        fontWeight: '500'
-      }
+        fontWeight: '500',
+      },
     }
+  }
+
+  if (loading) {
+    return <div className="p-4">Loading calendar events...</div>
   }
 
   return (
     <div className="p-4">
       <h1 className="text-2xl font-bold mb-4">Firm Calendar</h1>
-
-      <label className="mb-4 inline-flex items-center space-x-2">
-        <input
-          type="checkbox"
-          checked={showAvailableOnly}
-          onChange={(e) => setShowAvailableOnly(e.target.checked)}
-        />
-        <span>Show Available Slots Only</span>
-      </label>
-
       <Calendar
         localizer={localizer}
-        events={filteredEvents}
+        events={events}
         defaultView={view}
         views={['month', 'week', 'day']}
         startAccessor="start"
