@@ -228,7 +228,7 @@ export default function CalendarPage() {
         startAccessor="start"
         endAccessor="end"
         style={{ height: 600 }}
-        onView={(v) => setView(v)}
+        onView={(v: any) => setView(v)}
         eventPropGetter={eventStyleGetter}
         onSelectEvent={handleSelectEvent}
       />
