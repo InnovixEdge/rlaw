@@ -6,130 +6,170 @@ import { useState } from 'react'
 
 const localizer = momentLocalizer(moment)
 
-// Add a type for events
+// Staff member definitions
+const STAFF_MEMBERS = [
+  { id: 'lee', name: 'Attorney Lee', color: '#10b981' },      // Green
+  { id: 'smith', name: 'Attorney Smith', color: '#3b82f6' }, // Blue  
+  { id: 'jones', name: 'Attorney Jones', color: '#8b5cf6' }, // Purple
+  { id: 'davis', name: 'Attorney Davis', color: '#f59e0b' }, // Orange
+]
+
+// Add staff and type info to events
 interface CalendarEvent {
   title: string
   start: string | Date
   end: string | Date
+  staff?: string
+  type?: 'available' | 'booked' | 'meeting' | 'other'
   [key: string]: any
 }
 
 export default function CalendarPage() {
   const [view, setView] = useState(Views.MONTH)
-  // Mock data for testing - remove this when API is working
+  
+  // Enhanced mock data with staff assignments
   const [events, setEvents] = useState<CalendarEvent[]>([
     {
       title: 'Available Consultation Slot',
-      start: new Date(2025, 6, 10, 9, 0), // July 10, 9 AM
-      end: new Date(2025, 6, 10, 10, 0)   // July 10, 10 AM
+      start: new Date(2025, 6, 10, 9, 0),
+      end: new Date(2025, 6, 10, 10, 0),
+      staff: 'lee',
+      type: 'available'
     },
     {
       title: 'Available Legal Review',
-      start: new Date(2025, 6, 11, 14, 0), // July 11, 2 PM
-      end: new Date(2025, 6, 11, 15, 0)    // July 11, 3 PM
+      start: new Date(2025, 6, 11, 14, 0),
+      end: new Date(2025, 6, 11, 15, 0),
+      staff: 'smith',
+      type: 'available'
     },
     {
-      title: 'Booked Appointment - John Doe',
-      start: new Date(2025, 6, 12, 10, 0), // July 12, 10 AM
-      end: new Date(2025, 6, 12, 11, 0)    // July 12, 11 AM
+      title: 'Client Meeting - John Doe',
+      start: new Date(2025, 6, 12, 10, 0),
+      end: new Date(2025, 6, 12, 11, 0),
+      staff: 'lee',
+      type: 'booked'
+    },
+    {
+      title: 'Available Court Prep Session',
+      start: new Date(2025, 6, 13, 13, 0),
+      end: new Date(2025, 6, 13, 14, 30),
+      staff: 'jones',
+      type: 'available'
     },
     {
       title: 'Team Meeting',
-      start: new Date(2025, 6, 9, 15, 0),  // July 9, 3 PM
-      end: new Date(2025, 6, 9, 16, 0)     // July 9, 4 PM
+      start: new Date(2025, 6, 9, 15, 0),
+      end: new Date(2025, 6, 9, 16, 0),
+      staff: null, // No specific staff - team event
+      type: 'meeting'
+    },
+    {
+      title: 'Client Consultation - Jane Smith',
+      start: new Date(2025, 6, 14, 11, 0),
+      end: new Date(2025, 6, 14, 12, 0),
+      staff: 'davis',
+      type: 'booked'
+    },
+    {
+      title: 'Available Initial Consultation',
+      start: new Date(2025, 6, 15, 16, 0),
+      end: new Date(2025, 6, 15, 17, 0),
+      staff: 'smith',
+      type: 'available'
     }
   ])
   
   const [showAvailableOnly, setShowAvailableOnly] = useState(false)
+  const [selectedStaff, setSelectedStaff] = useState('all')
   const [showForm, setShowForm] = useState(false)
   const [formData, setFormData] = useState({
     title: '',
     start: '',
-    end: ''
+    end: '',
+    staff: 'lee',
+    type: 'available'
   })
 
-  // Filter events based on availability toggle
-  const filteredEvents = showAvailableOnly 
-    ? events.filter(event => event.title?.toLowerCase().includes('available') || event.title?.toLowerCase().includes('open'))
-    : events
+  // Filter events based on toggles
+  const filteredEvents = events.filter(event => {
+    // Filter by availability
+    if (showAvailableOnly && event.type !== 'available') {
+      return false
+    }
+    
+    // Filter by staff
+    if (selectedStaff !== 'all' && event.staff !== selectedStaff) {
+      return false
+    }
+    
+    return true
+  })
+
+  // Get staff member info
+  const getStaffInfo = (staffId: string | null) => {
+    if (!staffId) return null
+    return STAFF_MEMBERS.find(s => s.id === staffId)
+  }
 
   function eventStyleGetter(event: CalendarEvent) {
-    const title = event.title?.toLowerCase() || ''
+    const staffInfo = getStaffInfo(event.staff)
     
-    if (title.includes('available') || title.includes('open')) {
+    if (staffInfo) {
+      // Color by staff member
       return {
         style: {
-          backgroundColor: '#10b981',
+          backgroundColor: staffInfo.color,
           color: 'white',
-          fontWeight: '500'
-        }
-      }
-    } else if (title.includes('booked') || title.includes('appointment')) {
-      return {
-        style: {
-          backgroundColor: '#ef4444',
-          color: 'white',
-          fontWeight: '500'
+          fontWeight: '500',
+          border: event.type === 'available' ? '2px solid #fff' : 'none'
         }
       }
     }
     
+    // Default color for events without staff assignment
     return {
       style: {
-        backgroundColor: '#38bdf8',
-        color: 'black',
+        backgroundColor: '#6b7280', // Gray for team events
+        color: 'white',
         fontWeight: '500'
       }
     }
   }
 
   const handleSubmit = async () => {
-    // For now, just add to local state - replace with API call later
     const newEvent: CalendarEvent = {
       title: formData.title,
       start: new Date(formData.start),
-      end: new Date(formData.end)
+      end: new Date(formData.end),
+      staff: formData.staff,
+      type: formData.type as 'available' | 'booked' | 'meeting' | 'other'
     }
     
     setEvents([...events, newEvent])
     setShowForm(false)
-    setFormData({ title: '', start: '', end: '' })
-    
-    // TODO: Replace with actual API call
-    // await fetch('/api/add-google-event', {
-    //   method: 'POST',
-    //   headers: { 'Content-Type': 'application/json' },
-    //   body: JSON.stringify(formData)
-    // })
+    setFormData({ title: '', start: '', end: '', staff: 'lee', type: 'available' })
   }
 
   const handleSelectEvent = async (event: CalendarEvent) => {
-    const isAvailable = event.title?.toLowerCase().includes('available') || event.title?.toLowerCase().includes('open')
+    const staffInfo = getStaffInfo(event.staff)
+    const staffName = staffInfo ? staffInfo.name : 'Team'
     
-    if (isAvailable) {
-      const confirm = window.confirm(`Book this available slot: ${event.title}?`)
+    if (event.type === 'available') {
+      const confirm = window.confirm(
+        `Book this slot with ${staffName}?\n\n${event.title}\n${moment(event.start).format('MMMM Do, h:mm A')} - ${moment(event.end).format('h:mm A')}`
+      )
       if (!confirm) return
       
-      // For now, just update locally - replace with API call later
+      // Update event to booked
       const updatedEvents = events.map(e => 
         e === event 
-          ? { ...e, title: 'Booked Appointment - New Client' }
+          ? { ...e, title: `Client Meeting - New Client`, type: 'booked' as const }
           : e
       )
       setEvents(updatedEvents)
-      
-      // TODO: Replace with actual API call
-      // await fetch('/api/add-google-event', {
-      //   method: 'POST',
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify({
-      //     title: 'Booked Appointment',
-      //     start: event.start,
-      //     end: event.end
-      //   })
-      // })
     } else {
-      alert('This slot is already booked or unavailable.')
+      alert(`This is a ${event.type} event with ${staffName}: ${event.title}`)
     }
   }
 
@@ -140,12 +180,12 @@ export default function CalendarPage() {
       {/* Status banner */}
       <div className="mb-4 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
         <p className="text-sm text-yellow-800">
-          📋 <strong>Demo Mode:</strong> Using mock data. Connect your Google Calendar API to sync real events.
+          📋 <strong>Demo Mode:</strong> Using mock data with staff assignments. Connect your Google Calendar API to sync real events.
         </p>
       </div>
       
-      {/* Action buttons */}
-      <div className="flex gap-2 mb-4">
+      {/* Control buttons */}
+      <div className="flex flex-wrap gap-2 mb-4">
         <button
           className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
           onClick={() => setShowForm(true)}
@@ -162,34 +202,50 @@ export default function CalendarPage() {
         >
           {showAvailableOnly ? "Show All Events" : "Show Available Only"}
         </button>
+        
+        {/* Staff filter dropdown */}
+        <select
+          className="px-4 py-2 border border-gray-300 rounded-md bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          value={selectedStaff}
+          onChange={(e) => setSelectedStaff(e.target.value)}
+        >
+          <option value="all">All Staff</option>
+          {STAFF_MEMBERS.map(staff => (
+            <option key={staff.id} value={staff.id}>
+              {staff.name}
+            </option>
+          ))}
+        </select>
       </div>
 
-      {/* Legend */}
+      {/* Staff Legend */}
       <div className="mb-4 p-3 bg-gray-50 rounded-lg">
-        <h3 className="font-semibold mb-2">Legend:</h3>
-        <div className="flex gap-4 text-sm">
+        <h3 className="font-semibold mb-2">Staff Legend:</h3>
+        <div className="flex flex-wrap gap-4 text-sm mb-2">
+          {STAFF_MEMBERS.map(staff => (
+            <div key={staff.id} className="flex items-center gap-2">
+              <div 
+                className="w-4 h-4 rounded" 
+                style={{ backgroundColor: staff.color }}
+              ></div>
+              <span>{staff.name}</span>
+            </div>
+          ))}
           <div className="flex items-center gap-2">
-            <div className="w-4 h-4 bg-green-500 rounded"></div>
-            <span>Available Slots</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <div className="w-4 h-4 bg-red-500 rounded"></div>
-            <span>Booked Appointments</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <div className="w-4 h-4 bg-blue-400 rounded"></div>
-            <span>Other Events</span>
+            <div className="w-4 h-4 bg-gray-500 rounded"></div>
+            <span>Team Events</span>
           </div>
         </div>
-        <p className="text-xs text-gray-600 mt-1">
-          {showAvailableOnly ? 
-            `Showing ${filteredEvents.length} available slots` : 
-            `Showing ${filteredEvents.length} total events`
-          }
-        </p>
+        <div className="text-xs text-gray-600 flex gap-4">
+          <span>📍 <strong>Available slots</strong> have white borders</span>
+          <span>📊 Showing {filteredEvents.length} events 
+            {selectedStaff !== 'all' && ` for ${getStaffInfo(selectedStaff)?.name}`}
+            {showAvailableOnly && ' (available only)'}
+          </span>
+        </div>
       </div>
 
-      {/* Simple form modal */}
+      {/* Enhanced form modal */}
       {showForm && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white p-6 rounded-lg w-full max-w-md mx-4">
@@ -206,6 +262,41 @@ export default function CalendarPage() {
                   onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                   placeholder="e.g., Available Consultation Slot"
                 />
+              </div>
+              
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Staff Member
+                  </label>
+                  <select
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    value={formData.staff}
+                    onChange={(e) => setFormData({ ...formData, staff: e.target.value })}
+                  >
+                    {STAFF_MEMBERS.map(staff => (
+                      <option key={staff.id} value={staff.id}>
+                        {staff.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Event Type
+                  </label>
+                  <select
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    value={formData.type}
+                    onChange={(e) => setFormData({ ...formData, type: e.target.value })}
+                  >
+                    <option value="available">Available Slot</option>
+                    <option value="booked">Booked</option>
+                    <option value="meeting">Meeting</option>
+                    <option value="other">Other</option>
+                  </select>
+                </div>
               </div>
               
               <div>
