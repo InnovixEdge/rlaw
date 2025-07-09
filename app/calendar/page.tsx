@@ -6,9 +6,17 @@ import { useEffect, useState } from 'react'
 
 const localizer = momentLocalizer(moment)
 
+// Add a type for events
+interface CalendarEvent {
+  title: string
+  start: string | Date
+  end: string | Date
+  [key: string]: any
+}
+
 export default function CalendarPage() {
   const [view, setView] = useState(Views.MONTH)
-  const [events, setEvents] = useState([])
+  const [events, setEvents] = useState<CalendarEvent[]>([]) // Add proper typing
   const [showAvailableOnly, setShowAvailableOnly] = useState(false)
   const [showForm, setShowForm] = useState(false)
   const [formData, setFormData] = useState({
@@ -28,7 +36,7 @@ export default function CalendarPage() {
     ? events.filter(event => event.title?.toLowerCase().includes('available') || event.title?.toLowerCase().includes('open'))
     : events
 
-  function eventStyleGetter(event: any) {
+  function eventStyleGetter(event: CalendarEvent) {
     const title = event.title?.toLowerCase() || ''
     
     if (title.includes('available') || title.includes('open')) {
@@ -72,7 +80,7 @@ export default function CalendarPage() {
     setEvents(updated)
   }
 
-  const handleSelectEvent = async (event: any) => {
+  const handleSelectEvent = async (event: CalendarEvent) => {
     const isAvailable = event.title?.toLowerCase().includes('available') || event.title?.toLowerCase().includes('open')
     
     if (isAvailable) {
