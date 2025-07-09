@@ -1,14 +1,14 @@
 'use client'
 
 import { Calendar, momentLocalizer, Views } from 'react-big-calendar'
-import type { Event, View } from 'react-big-calendar'
+import type { View } from 'react-big-calendar'
 import 'react-big-calendar/lib/css/react-big-calendar.css'
 import moment from 'moment'
 import { useState } from 'react'
 
 const localizer = momentLocalizer(moment)
 
-const allEvents: Event[] = [
+const allEvents = [
   {
     id: 0,
     title: 'Consultation - Jane Doe',
