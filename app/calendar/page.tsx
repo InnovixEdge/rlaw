@@ -1,15 +1,14 @@
 'use client'
 
 import { Calendar, momentLocalizer, Views } from 'react-big-calendar'
+import type { Event, View } from 'react-big-calendar'
 import 'react-big-calendar/lib/css/react-big-calendar.css'
 import moment from 'moment'
 import { useState } from 'react'
 
-// Localizer setup
 const localizer = momentLocalizer(moment)
 
-// Hardcoded events for testing
-const events = [
+const allEvents: Event[] = [
   {
     id: 0,
     title: 'Consultation - Jane Doe',
@@ -36,13 +35,14 @@ const events = [
   }
 ]
 
-// Manually define allowed view types
-type CalendarView = 'month' | 'week' | 'day' | 'agenda'
-
 export default function CalendarPage() {
-  const [view, setView] = useState<CalendarView>('month')
+  const [view, setView] = useState<View>(Views.MONTH)
+  const [showAvailableOnly, setShowAvailableOnly] = useState(false)
 
-  // Color coding events
+  const filteredEvents = showAvailableOnly
+    ? allEvents.filter((event: any) => event.available)
+    : allEvents
+
   function eventStyleGetter(event: any) {
     const backgroundColor = event.available ? '#38bdf8' : '#f87171'
     const borderColor = event.staff === 'Attorney Lee' ? '#4ade80' : '#facc15'
@@ -59,16 +59,25 @@ export default function CalendarPage() {
 
   return (
     <div className="p-4">
-      <h1 className="text-2xl font-bold mb-4">Firm Calendar</h1>
+      <div className="flex items-center justify-between mb-4">
+        <h1 className="text-2xl font-bold">Firm Calendar</h1>
+        <button
+          onClick={() => setShowAvailableOnly(prev => !prev)}
+          className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition"
+        >
+          {showAvailableOnly ? 'Show All Events' : 'Show Only Available Slots'}
+        </button>
+      </div>
+
       <Calendar
         localizer={localizer}
-        events={events}
+        events={filteredEvents}
         defaultView={view}
         views={['month', 'week', 'day']}
         startAccessor="start"
         endAccessor="end"
         style={{ height: 600 }}
-        onView={(view: CalendarView) => setView(view)}
+        onView={(view: View) => setView(view)}
         eventPropGetter={eventStyleGetter}
       />
     </div>
