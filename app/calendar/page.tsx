@@ -1,13 +1,14 @@
 'use client'
 
 import { Calendar, momentLocalizer, Views } from 'react-big-calendar'
-import type { View } from 'react-big-calendar'
 import 'react-big-calendar/lib/css/react-big-calendar.css'
 import moment from 'moment'
 import { useState } from 'react'
 
+// Localizer setup
 const localizer = momentLocalizer(moment)
 
+// Hardcoded events for testing
 const events = [
   {
     id: 0,
@@ -35,14 +36,15 @@ const events = [
   }
 ]
 
+// Manually define allowed view types
+type CalendarView = 'month' | 'week' | 'day' | 'agenda'
+
 export default function CalendarPage() {
-  const [view, setView] = useState(Views.MONTH)
+  const [view, setView] = useState<CalendarView>('month')
 
+  // Color coding events
   function eventStyleGetter(event: any) {
-    const backgroundColor = event.available
-      ? '#38bdf8'
-      : '#f87171'
-
+    const backgroundColor = event.available ? '#38bdf8' : '#f87171'
     const borderColor = event.staff === 'Attorney Lee' ? '#4ade80' : '#facc15'
 
     return {
@@ -66,7 +68,7 @@ export default function CalendarPage() {
         startAccessor="start"
         endAccessor="end"
         style={{ height: 600 }}
-        onView={(view: View) => setView(view)}
+        onView={(view: CalendarView) => setView(view)}
         eventPropGetter={eventStyleGetter}
       />
     </div>
