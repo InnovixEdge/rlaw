@@ -3,19 +3,6 @@ import { Calendar, momentLocalizer, Views } from 'react-big-calendar'
 import 'react-big-calendar/lib/css/react-big-calendar.css'
 import moment from 'moment'
 import { useEffect, useState } from 'react'
-import { 
-  Dialog, 
-  DialogContent, 
-  DialogHeader, 
-  DialogTitle, 
-  DialogDescription,
-  DialogFooter,
-  DialogTrigger,
-  DialogClose
-} from '@/components/ui/dialog'
-import { Input } from '@/components/ui/input'
-import { Button } from '@/components/ui/button'
-import { Label } from '@/components/ui/label'
 
 const localizer = momentLocalizer(moment)
 
@@ -23,6 +10,7 @@ export default function CalendarPage() {
   const [view, setView] = useState(Views.MONTH)
   const [events, setEvents] = useState([])
   const [showAvailableOnly, setShowAvailableOnly] = useState(false)
+  const [showForm, setShowForm] = useState(false)
   const [formData, setFormData] = useState({
     title: '',
     start: '',
@@ -41,13 +29,12 @@ export default function CalendarPage() {
     : events
 
   function eventStyleGetter(event: any) {
-    // Color coding based on event type
     const title = event.title?.toLowerCase() || ''
     
     if (title.includes('available') || title.includes('open')) {
       return {
         style: {
-          backgroundColor: '#10b981', // Green for available slots
+          backgroundColor: '#10b981',
           color: 'white',
           fontWeight: '500'
         }
@@ -55,7 +42,7 @@ export default function CalendarPage() {
     } else if (title.includes('booked') || title.includes('appointment')) {
       return {
         style: {
-          backgroundColor: '#ef4444', // Red for booked slots
+          backgroundColor: '#ef4444',
           color: 'white',
           fontWeight: '500'
         }
@@ -64,7 +51,7 @@ export default function CalendarPage() {
     
     return {
       style: {
-        backgroundColor: '#38bdf8', // Default blue
+        backgroundColor: '#38bdf8',
         color: 'black',
         fontWeight: '500'
       }
@@ -77,9 +64,10 @@ export default function CalendarPage() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(formData)
     })
+    
+    setShowForm(false)
     setFormData({ title: '', start: '', end: '' })
     
-    // Refresh events
     const updated = await fetch('/api/google-events').then(res => res.json())
     setEvents(updated)
   }
@@ -101,7 +89,6 @@ export default function CalendarPage() {
         })
       })
       
-      // Refresh events
       const updated = await fetch('/api/google-events').then(res => res.json())
       setEvents(updated)
     } else {
@@ -115,68 +102,22 @@ export default function CalendarPage() {
       
       {/* Action buttons */}
       <div className="flex gap-2 mb-4">
-        <Dialog>
-          <DialogTrigger asChild>
-            <Button>Add Event</Button>
-          </DialogTrigger>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Add New Event</DialogTitle>
-              <DialogDescription>
-                Create a new calendar event or appointment slot.
-              </DialogDescription>
-            </DialogHeader>
-            
-            <div className="space-y-4">
-              <div>
-                <Label htmlFor="title">Event Title</Label>
-                <Input
-                  id="title"
-                  value={formData.title}
-                  onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                  placeholder="e.g., Available Consultation Slot"
-                />
-              </div>
-              
-              <div>
-                <Label htmlFor="start">Start Time</Label>
-                <Input
-                  id="start"
-                  type="datetime-local"
-                  value={formData.start}
-                  onChange={(e) => setFormData({ ...formData, start: e.target.value })}
-                />
-              </div>
-              
-              <div>
-                <Label htmlFor="end">End Time</Label>
-                <Input
-                  id="end"
-                  type="datetime-local"
-                  value={formData.end}
-                  onChange={(e) => setFormData({ ...formData, end: e.target.value })}
-                />
-              </div>
-            </div>
-            
-            <DialogFooter>
-              <DialogClose asChild>
-                <Button variant="outline">Cancel</Button>
-              </DialogClose>
-              <DialogClose asChild>
-                <Button onClick={handleSubmit}>Add Event</Button>
-              </DialogClose>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
+        <button
+          className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+          onClick={() => setShowForm(true)}
+        >
+          Add Event
+        </button>
         
-        {/* Availability toggle */}
-        <Button 
-          variant={showAvailableOnly ? "default" : "outline"}
+        <button
+          className={`px-4 py-2 rounded-md ${showAvailableOnly 
+            ? 'bg-green-600 text-white' 
+            : 'border border-gray-300 bg-transparent hover:bg-gray-50'
+          }`}
           onClick={() => setShowAvailableOnly(!showAvailableOnly)}
         >
           {showAvailableOnly ? "Show All Events" : "Show Available Only"}
-        </Button>
+        </button>
       </div>
 
       {/* Legend */}
@@ -203,6 +144,68 @@ export default function CalendarPage() {
           }
         </p>
       </div>
+
+      {/* Simple form modal */}
+      {showForm && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white p-6 rounded-lg w-full max-w-md mx-4">
+            <h2 className="text-lg font-semibold mb-4">Add New Event</h2>
+            
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Event Title
+                </label>
+                <input
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  value={formData.title}
+                  onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                  placeholder="e.g., Available Consultation Slot"
+                />
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Start Time
+                </label>
+                <input
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  type="datetime-local"
+                  value={formData.start}
+                  onChange={(e) => setFormData({ ...formData, start: e.target.value })}
+                />
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  End Time
+                </label>
+                <input
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  type="datetime-local"
+                  value={formData.end}
+                  onChange={(e) => setFormData({ ...formData, end: e.target.value })}
+                />
+              </div>
+            </div>
+            
+            <div className="flex justify-end gap-2 mt-6">
+              <button
+                className="px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-50"
+                onClick={() => setShowForm(false)}
+              >
+                Cancel
+              </button>
+              <button
+                className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+                onClick={handleSubmit}
+              >
+                Add Event
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Calendar */}
       <Calendar
