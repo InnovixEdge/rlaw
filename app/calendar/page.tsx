@@ -2,7 +2,7 @@
 import { Calendar, momentLocalizer, Views } from 'react-big-calendar'
 import 'react-big-calendar/lib/css/react-big-calendar.css'
 import moment from 'moment'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 
 const localizer = momentLocalizer(moment)
 
@@ -16,7 +16,30 @@ interface CalendarEvent {
 
 export default function CalendarPage() {
   const [view, setView] = useState(Views.MONTH)
-  const [events, setEvents] = useState<CalendarEvent[]>([]) // Add proper typing
+  // Mock data for testing - remove this when API is working
+  const [events, setEvents] = useState<CalendarEvent[]>([
+    {
+      title: 'Available Consultation Slot',
+      start: new Date(2025, 6, 10, 9, 0), // July 10, 9 AM
+      end: new Date(2025, 6, 10, 10, 0)   // July 10, 10 AM
+    },
+    {
+      title: 'Available Legal Review',
+      start: new Date(2025, 6, 11, 14, 0), // July 11, 2 PM
+      end: new Date(2025, 6, 11, 15, 0)    // July 11, 3 PM
+    },
+    {
+      title: 'Booked Appointment - John Doe',
+      start: new Date(2025, 6, 12, 10, 0), // July 12, 10 AM
+      end: new Date(2025, 6, 12, 11, 0)    // July 12, 11 AM
+    },
+    {
+      title: 'Team Meeting',
+      start: new Date(2025, 6, 9, 15, 0),  // July 9, 3 PM
+      end: new Date(2025, 6, 9, 16, 0)     // July 9, 4 PM
+    }
+  ])
+  
   const [showAvailableOnly, setShowAvailableOnly] = useState(false)
   const [showForm, setShowForm] = useState(false)
   const [formData, setFormData] = useState({
@@ -24,12 +47,6 @@ export default function CalendarPage() {
     start: '',
     end: ''
   })
-
-  useEffect(() => {
-    fetch('/api/google-events')
-      .then(res => res.json())
-      .then(data => setEvents(data))
-  }, [])
 
   // Filter events based on availability toggle
   const filteredEvents = showAvailableOnly 
@@ -67,17 +84,23 @@ export default function CalendarPage() {
   }
 
   const handleSubmit = async () => {
-    await fetch('/api/add-google-event', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(formData)
-    })
+    // For now, just add to local state - replace with API call later
+    const newEvent: CalendarEvent = {
+      title: formData.title,
+      start: new Date(formData.start),
+      end: new Date(formData.end)
+    }
     
+    setEvents([...events, newEvent])
     setShowForm(false)
     setFormData({ title: '', start: '', end: '' })
     
-    const updated = await fetch('/api/google-events').then(res => res.json())
-    setEvents(updated)
+    // TODO: Replace with actual API call
+    // await fetch('/api/add-google-event', {
+    //   method: 'POST',
+    //   headers: { 'Content-Type': 'application/json' },
+    //   body: JSON.stringify(formData)
+    // })
   }
 
   const handleSelectEvent = async (event: CalendarEvent) => {
@@ -87,18 +110,24 @@ export default function CalendarPage() {
       const confirm = window.confirm(`Book this available slot: ${event.title}?`)
       if (!confirm) return
       
-      await fetch('/api/add-google-event', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          title: 'Booked Appointment',
-          start: event.start,
-          end: event.end
-        })
-      })
+      // For now, just update locally - replace with API call later
+      const updatedEvents = events.map(e => 
+        e === event 
+          ? { ...e, title: 'Booked Appointment - New Client' }
+          : e
+      )
+      setEvents(updatedEvents)
       
-      const updated = await fetch('/api/google-events').then(res => res.json())
-      setEvents(updated)
+      // TODO: Replace with actual API call
+      // await fetch('/api/add-google-event', {
+      //   method: 'POST',
+      //   headers: { 'Content-Type': 'application/json' },
+      //   body: JSON.stringify({
+      //     title: 'Booked Appointment',
+      //     start: event.start,
+      //     end: event.end
+      //   })
+      // })
     } else {
       alert('This slot is already booked or unavailable.')
     }
@@ -107,6 +136,13 @@ export default function CalendarPage() {
   return (
     <div className="p-4">
       <h1 className="text-2xl font-bold mb-4">Firm Calendar</h1>
+      
+      {/* Status banner */}
+      <div className="mb-4 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
+        <p className="text-sm text-yellow-800">
+          📋 <strong>Demo Mode:</strong> Using mock data. Connect your Google Calendar API to sync real events.
+        </p>
+      </div>
       
       {/* Action buttons */}
       <div className="flex gap-2 mb-4">
