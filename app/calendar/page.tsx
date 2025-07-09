@@ -107,7 +107,7 @@ export default function CalendarPage() {
   })
 
   // Get staff member info
-  const getStaffInfo = (staffId: string | null) => {
+  const getStaffInfo = (staffId: string | null | undefined) => {
     if (!staffId) return null
     return STAFF_MEMBERS.find(s => s.id === staffId)
   }
