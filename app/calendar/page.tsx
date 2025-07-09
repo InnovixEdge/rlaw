@@ -1,6 +1,7 @@
 'use client'
 
 import { Calendar, momentLocalizer, Views } from 'react-big-calendar'
+import type { View } from 'react-big-calendar'
 import 'react-big-calendar/lib/css/react-big-calendar.css'
 import moment from 'moment'
 import { useState } from 'react'
@@ -65,7 +66,7 @@ export default function CalendarPage() {
         startAccessor="start"
         endAccessor="end"
         style={{ height: 600 }}
-        onView={(view) => setView(view)}
+        onView={(view: View) => setView(view)}
         eventPropGetter={eventStyleGetter}
       />
     </div>
