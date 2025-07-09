@@ -13,7 +13,8 @@ const events = [
     title: 'Consultation - Jane Doe',
     start: new Date(2025, 6, 10, 10, 0),
     end: new Date(2025, 6, 10, 11, 0),
-    staff: 'Attorney Smith'
+    staff: 'Attorney Smith',
+    available: false
   },
   {
     id: 1,
@@ -22,13 +23,36 @@ const events = [
     end: new Date(2025, 6, 10, 12, 0),
     staff: 'Attorney Smith',
     available: true
+  },
+  {
+    id: 2,
+    title: 'Available Slot',
+    start: new Date(2025, 6, 11, 14, 0),
+    end: new Date(2025, 6, 11, 15, 0),
+    staff: 'Attorney Lee',
+    available: true
   }
 ]
 
-type CalendarView = 'month' | 'week' | 'day'
-
 export default function CalendarPage() {
-  const [view, setView] = useState<CalendarView>('month')
+  const [view, setView] = useState(Views.MONTH)
+
+  function eventStyleGetter(event: any) {
+    const backgroundColor = event.available
+      ? '#38bdf8'
+      : '#f87171'
+
+    const borderColor = event.staff === 'Attorney Lee' ? '#4ade80' : '#facc15'
+
+    return {
+      style: {
+        backgroundColor,
+        borderLeft: `4px solid ${borderColor}`,
+        color: 'black',
+        fontWeight: '500'
+      }
+    }
+  }
 
   return (
     <div className="p-4">
@@ -41,7 +65,8 @@ export default function CalendarPage() {
         startAccessor="start"
         endAccessor="end"
         style={{ height: 600 }}
-        onView={(view: CalendarView) => setView(view)}
+        onView={(view) => setView(view)}
+        eventPropGetter={eventStyleGetter}
       />
     </div>
   )
