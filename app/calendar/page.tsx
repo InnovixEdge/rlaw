@@ -1,84 +1,124 @@
 'use client'
 
-import { useEffect, useState } from 'react'
 import { Calendar, momentLocalizer, Views } from 'react-big-calendar'
 import 'react-big-calendar/lib/css/react-big-calendar.css'
 import moment from 'moment'
+import { useEffect, useState } from 'react'
+import { Dialog } from '@/components/ui/dialog'
+import { Input } from '@/components/ui/input'
+import { Button } from '@/components/ui/button'
+import { Label } from '@/components/ui/label'
+import { formatISO } from 'date-fns'
 
 const localizer = momentLocalizer(moment)
 
-interface Event {
-  title: string
-  start: Date
-  end: Date
-  staff?: string
-  available?: boolean
-}
-
 export default function CalendarPage() {
-  const [view, setView] = useState<typeof Views[keyof typeof Views]>(Views.MONTH)
-  const [events, setEvents] = useState<Event[]>([])
-  const [loading, setLoading] = useState(true)
+  const [view, setView] = useState(Views.MONTH)
+  const [events, setEvents] = useState([])
+  const [showForm, setShowForm] = useState(false)
+  const [formData, setFormData] = useState({
+    title: '',
+    start: '',
+    end: ''
+  })
 
   useEffect(() => {
-    async function fetchEvents() {
-      try {
-        const res = await fetch('/api/google-events')
-        if (!res.ok) {
-          throw new Error('Network response was not ok')
-        }
-        const data = await res.json()
-
-        // Transform fetched events to match the Event type
-        const googleEvents = data.map((event: any) => ({
-          title: event.summary,
-          start: new Date(event.start.dateTime || event.start.date),
-          end: new Date(event.end.dateTime || event.end.date),
-          available: !event.summary, // or your own logic to identify availability
-        }))
-
-        setEvents(googleEvents)
-      } catch (error) {
-        console.error('Error fetching events:', error)
-      } finally {
-        setLoading(false)
-      }
-    }
-
-    fetchEvents()
+    fetch('/api/google-events')
+      .then(res => res.json())
+      .then(data => setEvents(data))
   }, [])
 
-  function eventStyleGetter(event: Event) {
-    const backgroundColor = event.available ? '#38bdf8' : '#f87171'
-    const borderColor = event.staff === 'Attorney Lee' ? '#4ade80' : '#facc15'
-
+  function eventStyleGetter(event: any) {
     return {
       style: {
-        backgroundColor,
-        borderLeft: `4px solid ${borderColor}`,
+        backgroundColor: '#38bdf8',
         color: 'black',
-        fontWeight: '500',
-      },
+        fontWeight: '500'
+      }
     }
   }
 
-  if (loading) {
-    return <div className="p-4">Loading calendar events...</div>
+  const handleSubmit = async () => {
+    await fetch('/api/add-google-event', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(formData)
+    })
+    setShowForm(false)
+    setFormData({ title: '', start: '', end: '' })
+    const updated = await fetch('/api/google-events').then(res => res.json())
+    setEvents(updated)
+  }
+
+  const handleSelectEvent = async (event: any) => {
+    const confirm = window.confirm(`Book this slot: ${event.title}?`)
+    if (!confirm) return
+
+    await fetch('/api/add-google-event', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        title: 'Booked Appointment',
+        start: event.start,
+        end: event.end
+      })
+    })
+    const updated = await fetch('/api/google-events').then(res => res.json())
+    setEvents(updated)
   }
 
   return (
     <div className="p-4">
       <h1 className="text-2xl font-bold mb-4">Firm Calendar</h1>
+
+      <Button className="mb-4" onClick={() => setShowForm(true)}>
+        Add Event
+      </Button>
+
+      {showForm && (
+        <Dialog open={showForm} onOpenChange={setShowForm}>
+          <div className="bg-white p-4 rounded shadow w-[300px]">
+            <h2 className="font-semibold mb-2">Add Event</h2>
+            <Label>Title</Label>
+            <Input
+              value={formData.title}
+              onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+              className="mb-2"
+            />
+            <Label>Start</Label>
+            <Input
+              type="datetime-local"
+              value={formData.start}
+              onChange={(e) => setFormData({ ...formData, start: e.target.value })}
+              className="mb-2"
+            />
+            <Label>End</Label>
+            <Input
+              type="datetime-local"
+              value={formData.end}
+              onChange={(e) => setFormData({ ...formData, end: e.target.value })}
+              className="mb-2"
+            />
+            <Button onClick={handleSubmit}>Submit</Button>
+          </div>
+        </Dialog>
+      )}
+
       <Calendar
         localizer={localizer}
-        events={events}
+        events={events.map(e => ({
+          ...e,
+          start: new Date(e.start),
+          end: new Date(e.end)
+        }))}
         defaultView={view}
         views={['month', 'week', 'day']}
         startAccessor="start"
         endAccessor="end"
         style={{ height: 600 }}
-        onView={(view: typeof Views[keyof typeof Views]) => setView(view)}
+        onView={(v) => setView(v)}
         eventPropGetter={eventStyleGetter}
+        onSelectEvent={handleSelectEvent}
       />
     </div>
   )
