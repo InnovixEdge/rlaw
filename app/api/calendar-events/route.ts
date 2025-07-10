@@ -10,11 +10,15 @@ export async function GET(request: Request) {
   try {
     const userId = 'user123'; // In the future, replace with dynamic auth logic
 
-    const [googleEvents, outlookEvents] = await Promise.all([
-      getGoogleCalendarEvents(userId),
-      getOutlookCalendarEvents(userId),
-    ]);
+   // const [googleEvents, outlookEvents] = await Promise.all([
+    //  getGoogleCalendarEvents(userId),
+    //  getOutlookCalendarEvents(userId),
+//]);
 
+    // Placeholder data for now:
+    const googleEvents = [];
+    const outlookEvents = [];
+    
     return NextResponse.json({ googleEvents, outlookEvents });
   } catch (error) {
     console.error('Calendar API error:', error);
