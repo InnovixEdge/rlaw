@@ -1,4 +1,4 @@
-import { getGoogleCalendarEvents } from '@/backend/services/google-calendar'
+//import { getGoogleCalendarEvents } from '@/backend/services/google-calendar'
 import { NextResponse } from 'next/server'
 
 export async function GET() {
