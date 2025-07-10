@@ -10,7 +10,7 @@ export async function GET(req: NextRequest) {
   }
 
   try {
-    const tokens = await handleGoogleCallback(code)
+    const tokens = await handleGoogleCallback()
     console.log('[Google Callback] Tokens stored:', tokens)
 
     // Hardcoded redirect to your dashboard
