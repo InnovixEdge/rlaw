@@ -8,3 +8,7 @@ export function handleGoogleCallback() {
   // TODO: Implement Google OAuth callback handling
   return null;
 }
+
+export function fetchAvailability() {
+  return [];
+}
