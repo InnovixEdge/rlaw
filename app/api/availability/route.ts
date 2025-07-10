@@ -1,4 +1,4 @@
-import { fetchAvailability } from '@/backend/services/sync';
+import { fetchAvailability } from '@/lib/services/oauth';
 import { NextResponse } from 'next/server';
 
 export async function POST(req: Request) {
