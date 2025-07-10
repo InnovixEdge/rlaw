@@ -9,6 +9,6 @@ export function handleGoogleCallback() {
   return null;
 }
 
-export function fetchAvailability() {
+export function fetchAvailability(userIds: any, start: any, end: any) {
   return [];
 }
