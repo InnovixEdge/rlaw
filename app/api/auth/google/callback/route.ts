@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { handleGoogleCallback } from '@/backend/services/oauth'
+import { handleGoogleCallback } from '@/lib/services/oauth'
 
 export async function GET(req: NextRequest) {
   const url = new URL(req.url)
