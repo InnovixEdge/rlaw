@@ -16,8 +16,8 @@ export async function GET(request: Request) {
 //]);
 
     // Placeholder data for now:
-    const googleEvents = [];
-    const outlookEvents = [];
+    const googleEvents: any[] = [];
+    const outlookEvents: any[] = [];
     
     return NextResponse.json({ googleEvents, outlookEvents });
   } catch (error) {
