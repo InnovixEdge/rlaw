@@ -1,0 +1,245 @@
+generator client {
+    provider = "prisma-client-js"
+    binaryTargets = ["native", "linux-musl-arm64-openssl-3.0.x"]
+    output = "/home/ubuntu/revamped-calendar-app/app/node_modules/.prisma/client"
+}
+
+datasource db {
+    provider = "postgresql"
+    url      = env("DATABASE_URL")
+}
+
+// NextAuth.js required tables
+model Account {
+    id                String  @id @default(cuid())
+    userId            String  @map("user_id")
+    type              String
+    provider          String
+    providerAccountId String  @map("provider_account_id")
+    refresh_token     String? @db.Text
+    access_token      String? @db.Text
+    expires_at        Int?
+    token_type        String?
+    scope             String?
+    id_token          String? @db.Text
+    session_state     String?
+
+    user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    @@unique([provider, providerAccountId])
+    @@map("accounts")
+}
+
+model Session {
+    id           String   @id @default(cuid())
+    sessionToken String   @unique @map("session_token")
+    userId       String   @map("user_id")
+    expires      DateTime
+    user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    @@map("sessions")
+}
+
+model User {
+    id            String    @id @default(cuid())
+    name          String?
+    email         String    @unique
+    emailVerified DateTime? @map("email_verified")
+    image         String?
+    password      String?
+    role          UserRole  @default(STAFF)
+    isActive      Boolean   @default(true)
+    createdAt     DateTime  @default(now()) @map("created_at")
+    updatedAt     DateTime  @updatedAt @map("updated_at")
+
+    accounts           Account[]
+    sessions           Session[]
+    staffProfile       Staff?
+    createdAppointments Appointment[] @relation("CreatedBy")
+    calendarIntegrations CalendarIntegration[]
+    notificationSettings NotificationSetting?
+
+    @@map("users")
+}
+
+model VerificationToken {
+    identifier String
+    token      String   @unique
+    expires    DateTime
+
+    @@unique([identifier, token])
+    @@map("verification_tokens")
+}
+
+// Staff Management
+model Staff {
+    id          String    @id @default(cuid())
+    userId      String    @unique @map("user_id")
+    name        String
+    email       String    @unique
+    phone       String?
+    department  String?
+    position    String?
+    color       String    @default("#3b82f6") // For calendar color coding
+    isActive    Boolean   @default(true)
+    workingHours Json?    // Store working hours as JSON
+    createdAt   DateTime  @default(now()) @map("created_at")
+    updatedAt   DateTime  @updatedAt @map("updated_at")
+
+    user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+    appointments Appointment[]
+    
+    @@map("staff")
+}
+
+// Appointment Management
+model Appointment {
+    id            String            @id @default(cuid())
+    title         String
+    description   String?
+    startTime     DateTime          @map("start_time")
+    endTime       DateTime          @map("end_time")
+    status        AppointmentStatus @default(SCHEDULED)
+    type          AppointmentType   @default(CONSULTATION)
+    
+    // Client Information
+    clientName    String            @map("client_name")
+    clientEmail   String            @map("client_email")
+    clientPhone   String?           @map("client_phone")
+    clientNotes   String?           @map("client_notes")
+    
+    // Staff Assignment
+    staffId       String            @map("staff_id")
+    
+    // System Information
+    createdById   String            @map("created_by_id")
+    createdAt     DateTime          @default(now()) @map("created_at")
+    updatedAt     DateTime          @updatedAt @map("updated_at")
+    
+    // External Calendar Integration
+    googleEventId String?           @map("google_event_id")
+    outlookEventId String?          @map("outlook_event_id")
+    
+    staff         Staff             @relation(fields: [staffId], references: [id], onDelete: Cascade)
+    createdBy     User              @relation("CreatedBy", fields: [createdById], references: [id])
+    notifications AppointmentNotification[]
+    
+    @@map("appointments")
+}
+
+// Calendar Integration
+model CalendarIntegration {
+    id            String            @id @default(cuid())
+    userId        String            @map("user_id")
+    provider      CalendarProvider
+    isActive      Boolean           @default(true)
+    
+    // OAuth Tokens
+    accessToken   String?           @map("access_token") @db.Text
+    refreshToken  String?           @map("refresh_token") @db.Text
+    tokenExpiry   DateTime?         @map("token_expiry")
+    
+    // Provider-specific data
+    providerData  Json?             @map("provider_data")
+    
+    createdAt     DateTime          @default(now()) @map("created_at")
+    updatedAt     DateTime          @updatedAt @map("updated_at")
+    
+    user          User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+    
+    @@unique([userId, provider])
+    @@map("calendar_integrations")
+}
+
+// Notification System
+model NotificationSetting {
+    id                    String  @id @default(cuid())
+    userId                String  @unique @map("user_id")
+    
+    // Email Settings
+    emailEnabled          Boolean @default(true) @map("email_enabled")
+    emailConfirmation     Boolean @default(true) @map("email_confirmation")
+    emailReminder         Boolean @default(true) @map("email_reminder")
+    emailReminderMinutes  Int     @default(60) @map("email_reminder_minutes")
+    
+    // SMS Settings
+    smsEnabled            Boolean @default(false) @map("sms_enabled")
+    smsConfirmation       Boolean @default(false) @map("sms_confirmation")
+    smsReminder           Boolean @default(false) @map("sms_reminder")
+    smsReminderMinutes    Int     @default(30) @map("sms_reminder_minutes")
+    
+    createdAt             DateTime @default(now()) @map("created_at")
+    updatedAt             DateTime @updatedAt @map("updated_at")
+    
+    user                  User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+    
+    @@map("notification_settings")
+}
+
+model AppointmentNotification {
+    id              String               @id @default(cuid())
+    appointmentId   String               @map("appointment_id")
+    type            NotificationType
+    method          NotificationMethod
+    recipientEmail  String               @map("recipient_email")
+    recipientPhone  String?              @map("recipient_phone")
+    subject         String?
+    message         String               @db.Text
+    status          NotificationStatus   @default(PENDING)
+    sentAt          DateTime?            @map("sent_at")
+    errorMessage    String?              @map("error_message")
+    createdAt       DateTime             @default(now()) @map("created_at")
+    
+    appointment     Appointment          @relation(fields: [appointmentId], references: [id], onDelete: Cascade)
+    
+    @@map("appointment_notifications")
+}
+
+// Enums
+enum UserRole {
+    ADMIN
+    STAFF
+    MANAGER
+}
+
+enum AppointmentStatus {
+    SCHEDULED
+    CONFIRMED
+    CANCELLED
+    COMPLETED
+    NO_SHOW
+}
+
+enum AppointmentType {
+    CONSULTATION
+    FOLLOW_UP
+    COURT_PREP
+    DOCUMENT_REVIEW
+    MEETING
+    OTHER
+}
+
+enum CalendarProvider {
+    GOOGLE
+    OUTLOOK
+}
+
+enum NotificationType {
+    CONFIRMATION
+    REMINDER
+    CANCELLATION
+    RESCHEDULE
+}
+
+enum NotificationMethod {
+    EMAIL
+    SMS
+    BOTH
+}
+
+enum NotificationStatus {
+    PENDING
+    SENT
+    FAILED
+    CANCELLED
+}
