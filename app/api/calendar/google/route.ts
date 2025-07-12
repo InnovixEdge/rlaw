@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server';
 import { google } from 'googleapis';
-import type { CalendarEvent } from '@/types/calendar';
 
 class GoogleCalendarService {
   private async getAuthClient() {
