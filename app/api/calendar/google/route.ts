@@ -1,9 +1,30 @@
+// app/api/calendar/google/route.ts
 import { NextResponse } from 'next/server';
 import { google } from 'googleapis';
 
+// Define the interface directly in this file
+interface CalendarEvent {
+  id: string;
+  summary: string;
+  description?: string;
+  start: {
+    dateTime?: string;
+    date?: string;
+  };
+  end: {
+    dateTime?: string;
+    date?: string;
+  };
+  attendees?: Array<{
+    email: string;
+    responseStatus: string;
+  }>;
+  location?: string;
+}
+
 class GoogleCalendarService {
   private async getAuthClient() {
-    // Option 1: OAuth2 (recommended for user-specific calendars)
+    // OAuth2 setup
     const oauth2Client = new google.auth.OAuth2(
       process.env.GOOGLE_CLIENT_ID,
       process.env.GOOGLE_CLIENT_SECRET,
@@ -15,13 +36,6 @@ class GoogleCalendarService {
     });
 
     return oauth2Client;
-
-    // Option 2: Service Account (for shared/business calendars)
-    // const auth = new google.auth.GoogleAuth({
-    //   keyFile: process.env.GOOGLE_SERVICE_ACCOUNT_KEY,
-    //   scopes: ['https://www.googleapis.com/auth/calendar.readonly'],
-    // });
-    // return auth;
   }
 
   async getCalendarEvents(userId: string): Promise<CalendarEvent[]> {
