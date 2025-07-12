@@ -3,6 +3,9 @@
 import { useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
+// Force dynamic rendering to fix useSearchParams() issue
+export const dynamic = 'force-dynamic';
+
 export default function AuthSuccessPage() {
   const searchParams = useSearchParams();
   const [tokens, setTokens] = useState({
