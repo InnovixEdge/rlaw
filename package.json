@@ -118,7 +118,7 @@
     "react-big-calendar": "^1.8.2",
     "moment": "^2.29.4",
     "googleapis": "^142.0.0",
-    "@types/google__calendar": "^3.0.4",
+    # "@types/google__calendar": "^3.0.4",
     "node-fetch": "^3.3.2",
     "@vercel/kv": "^1.0.1"
   },
