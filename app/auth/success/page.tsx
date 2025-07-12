@@ -1,12 +1,10 @@
 'use client';
 
 import { useSearchParams } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, Suspense } from 'react';
 
-// Force dynamic rendering to fix useSearchParams() issue
-export const dynamic = 'force-dynamic';
-
-export default function AuthSuccessPage() {
+// Component that uses useSearchParams (wrapped in Suspense)
+function AuthSuccessContent() {
   const searchParams = useSearchParams();
   const [tokens, setTokens] = useState({
     access_token: false,
@@ -78,5 +76,28 @@ export default function AuthSuccessPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+// Loading fallback component
+function LoadingFallback() {
+  return (
+    <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
+      <div className="max-w-md w-full bg-white rounded-lg shadow-lg p-6">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
+          <p className="mt-2 text-gray-600">Loading...</p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// Main component with Suspense boundary
+export default function AuthSuccessPage() {
+  return (
+    <Suspense fallback={<LoadingFallback />}>
+      <AuthSuccessContent />
+    </Suspense>
   );
 }
