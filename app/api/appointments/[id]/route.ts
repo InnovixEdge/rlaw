@@ -1,4 +1,6 @@
-
+// Temporarily disable this route - Prisma not configured
+export {}
+/*
 import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { prisma } from '@/lib/db';
@@ -147,3 +149,4 @@ export async function DELETE(
     );
   }
 }
+*/
