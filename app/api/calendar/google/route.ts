@@ -55,20 +55,20 @@ class GoogleCalendarService {
       return response.data.items?.map(event => ({
         id: event.id!,
         summary: event.summary || 'No Title',
-        description: event.description,
+        description: event.description || undefined,
         start: {
-          dateTime: event.start?.dateTime,
-          date: event.start?.date,
+          dateTime: event.start?.dateTime || undefined,
+          date: event.start?.date || undefined,
         },
         end: {
-          dateTime: event.end?.dateTime,
-          date: event.end?.date,
+          dateTime: event.end?.dateTime || undefined,
+          date: event.end?.date || undefined,
         },
         attendees: event.attendees?.map(attendee => ({
-          email: attendee.email!,
-          responseStatus: attendee.responseStatus!,
-        })),
-        location: event.location,
+          email: attendee.email || '',
+          responseStatus: attendee.responseStatus || 'needsAction',
+        })) || undefined,
+        location: event.location || undefined,
       })) || [];
     } catch (error) {
       console.error('Error fetching Google Calendar events:', error);
