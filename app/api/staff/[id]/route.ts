@@ -4,6 +4,7 @@ import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { prisma } from '@/lib/db';
 import { authOptions } from '@/lib/auth';
+import { AppointmentStatus } from '@prisma/client'; // <-- ADD THIS
 
 export async function DELETE(
   request: Request,
@@ -11,7 +12,7 @@ export async function DELETE(
 ) {
   try {
     const session = await getServerSession(authOptions);
-    
+
     if (!session?.user?.id) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
@@ -33,7 +34,7 @@ export async function DELETE(
       where: {
         staffId: params.id,
         status: {
-          not: 'CANCELLED',
+          not: AppointmentStatus.CANCELLED, // <-- FIXED HERE
         },
       },
     });
