@@ -198,7 +198,7 @@ model AppointmentNotification {
 enum UserRole {
     ADMIN
     STAFF
-    MANAGER
+    ATTORNEY
 }
 
 enum AppointmentStatus {
@@ -215,6 +215,10 @@ enum AppointmentType {
     COURT_PREP
     DOCUMENT_REVIEW
     MEETING
+    NEP
+    EP_REVIEW
+    ESTATE_PLANNING
+    TRUST
     OTHER
 }
 
