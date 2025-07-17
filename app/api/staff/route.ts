@@ -4,14 +4,21 @@ import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { prisma } from '@/lib/db';
 import { authOptions } from '@/lib/auth';
+import { UserRole } from '@prisma/client'; // Add the enum import
 
+// GET: List staff
 export async function GET(request: Request) {
   try {
     const session = await getServerSession(authOptions);
-    
+
     if (!session?.user?.id) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
+
+    // Optionally, limit visibility to admins/managers only.
+    // if (session.user.role !== 'ADMIN' && session.user.role !== 'MANAGER') {
+    //   return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+    // }
 
     const staff = await prisma.staff.findMany({
       where: {
@@ -42,16 +49,26 @@ export async function GET(request: Request) {
   }
 }
 
+// POST: Create staff
 export async function POST(request: Request) {
   try {
     const session = await getServerSession(authOptions);
-    
-    if (!session?.user?.id) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+
+    // Only admins can create new staff
+    if (!session?.user?.id || session.user.role !== 'ADMIN') {
+      return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
     }
 
     const data = await request.json();
-    const { name, email, phone, position, department, color } = data;
+    const {
+      name,
+      email,
+      phone,
+      position,
+      department,
+      color,
+      role, // Optional role, sent from frontend (ADMIN, STAFF, ATTORNEY)
+    } = data;
 
     // Validate required fields
     if (!name || !email) {
@@ -73,13 +90,27 @@ export async function POST(request: Request) {
       );
     }
 
-    // Create user first
+    // Ensure role is valid, fallback to STAFF if not provided or invalid
+    let safeRole: UserRole = UserRole.STAFF;
+    if (
+      typeof role === 'string' &&
+      Object.values(UserRole).includes(role as UserRole)
+    ) {
+      // Only allow ADMIN to create other ADMINs if you want (optional):
+      // if (role === UserRole.ADMIN && session.user.role !== UserRole.ADMIN) {
+      //   safeRole = UserRole.STAFF;
+      // } else {
+      //   safeRole = role as UserRole;
+      // }
+      safeRole = role as UserRole;
+    }
+
+    // Create user first (no password for now)
     const user = await prisma.user.create({
       data: {
         name,
         email,
-        role: 'STAFF',
-        // No password - they'll need to set it separately
+        role: safeRole,
       },
     });
 
